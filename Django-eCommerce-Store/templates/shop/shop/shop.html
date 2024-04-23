@@ -1,203 +1,102 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Shop{% endblock %}
+{% block title %}E-Shop{% endblock title %}
 {% block content %}
-<!-- header section end -->
-        <!-- pages-title-start -->
-		<div style="background:#40394a" class="pages-title section-padding">
-			<div class="container">
-				<div class="row">
-					<div class="col-xs-12">
-						<div class="pages-title-text text-center">
-							{% if category_slug != None %}
-							<h2 style="color:#f4cca4;text-transform: capitalize;">{{category_slug}}</h2>
-							{% else %}
-							<h2 style="color:#f4cca4;text-transform: capitalize;">All Products</h2>
-							{% endif %}
-							<ul class="text-left">
-								<li ><a href="\">Home </a></li>
-								<li style="color:#f4cca4"><span> // </span>Shop</li>
-								{% if category_slug != None %}
-								<li style="color:#f4cca4"><span> // </span>{{category_slug}}</li>
-								{% endif %}
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<br>
-		<!-- pages-title-end -->
-        <!-- collection section start -->
-		
-		<!-- collection section end -->
-		<!-- product-grid-view content section start -->
-		<section style="background:#1c1427"   class="pages products-page section-padding-bottom">
-			<div class="container">
-				<div class="row"><br>
-					<div class="col-xs-12 col-sm-4 col-md-3">
-						<div class="sidebar left-sidebar">
-							<div style="background:#40394a; color:#d99879;;border-radius:20px 20px 0 0;" class="s-side-text">
-								<div class="sidebar-title clearfix text-center">
-									<h3 >Categories</h3>
-									
-								</div>
-								<div  class="sidebar-title clearfix">
-									<h4 class="floatleft"><a style="font-weight:600;color:#f4cca4"  href="{% url 'shop:shop' %}">All</a></h4>
-								</div>
-                                {% for category in categories %}
-                                <div  class="sidebar-title clearfix">
-									<h4 class="floatleft"><a style="font-weight:600;color:#f4cca4"  href="{{ category.get_category_slug_url }}">{{category.name}}</a></h4>
-								</div>
-                                {% endfor %}
-							</div>
-							
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-8 col-md-9">
-						<div class="right-products">
-							<div class="row">
-								<div class="col-xs-12">
-									<div style="background:#40394a;border-radius:10px;" class="section-title clearfix">
-										<ul >
-											<li>
-												<ul class="nav-view">
-													<li class="active"><a data-toggle="tab" href="#grid"> <i style="color:#d99879" class="mdi mdi-view-module"></i> </a></li>
-													<li><a data-toggle="tab" href="#list"> <i style="color:#d99879" class="mdi mdi-view-list"></i> </a></li>
-												</ul>
-											</li>
-											<li style="color:#d99879; font-size:18px" class="sort-by floatright">
-												{{products_count}} Results
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="tab-content grid-content">
-									<div class="tab-pane fade in active text-center" id="grid">
-                                        {% for product in products %}
-										<div  class="col-xs-12 col-sm-6 col-md-4">
-											<div   style="background:#40394a; ;border-radius:15px;" class="single-product">
-												<div class="product-img">
-													{% if product.discount != 0.00 %}
-													<div class="pro-type">
-														<span>Discount</span>
-													</div>
-													{% endif %}
-													{% if product.new %}
-													<div style="background:#1c1427;color:#f4cca4" class="pro-type">
-														<span>New</span>
-													</div>
-													{% endif %}
-													<a href="{{product.get_prodcut_details_url}}"><img style="width:100%; height:350px;;border-radius:15px 15px 0 0;" src="{{product.image.url}}" alt="Product Title" /></a>
-													<div class="actions-btn">
-														<a style="margin-left:20px" href="{% url 'cart:add_cart' product.id %}"><i class="mdi mdi-cart"></i></a>
-														<a href="{{product.get_prodcut_details_url}}"><i class="mdi mdi-eye"></i></a>
-													</div>
-												</div>
-												<div class="product-dsc">
-													
-													<p><a style="color:#d99879" href="{{product.get_prodcut_details_url}}">{{product.name}}</a></p>
-													<span>${{product.price}}</span><br><br>
-													<div style="font-size:16px" class="rating-star">
-														<span>
-														<i class="fa fa-star{% if product.averageRating < 0.5 %}-o{% elif product.averageRating >= 0.5 and product.averageRating < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
-														<i class="fa fa-star{% if product.averageRating < 1.5 %}-o{% elif product.averageRating >= 1.5 and product.averageRating < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
-														<i class="fa fa-star{% if product.averageRating < 2.5 %}-o{% elif product.averageRating >= 2.5 and product.averageRating < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
-														<i class="fa fa-star{% if product.averageRating < 3.5 %}-o{% elif product.averageRating >= 3.5 and product.averageRating < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
-														<i class="fa fa-star{% if product.averageRating < 4.5 %}-o{% elif product.averageRating >= 4.5 and product.averageRating < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
-														&nbsp;<span style="font-size:16px">(<b>{{product.countReview}}</b> reviews)</span>
-														</span>
-													</div>
-													
-												</div>
-											</div>
-										</div>
-										{% endfor %}
-									</div>
-									<div class="tab-pane fade in" id="list">
-                                        {% for product in products %}
-										<div class="col-xs-12">
-											<div class="single-list-view">
-												<div style="width:100%; height:350px" class="row">
-													<div class="col-xs-12 col-md-4">
-														<div class="list-img">
-															<div class="product-img">
-															{% if product.discount != 0.00 %}
-															<div class="pro-type">
-																<span>Discount</span>
-															</div>
-															{% endif %}
-																<a href="{{product.get_prodcut_details_url}}"><img style="width:100%; height:350px; border-radius:20px 0 0 20px;" src="{{product.image.url}}" alt="Product Title" /></a>
-															</div>
-														</div>
-													</div>
-													<div class="col-xs-12 col-md-8">
-														<div style="height:350px; border-radius:0 20px 20px 0;"  class="list-text">
-															
-															<div style="font-size:16px" class="rating-star floatright">
-																<span>
-																<i class="fa fa-star{% if product.averageRating < 0.5 %}-o{% elif product.averageRating >= 0.5 and product.averageRating < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
-																<i class="fa fa-star{% if product.averageRating < 1.5 %}-o{% elif product.averageRating >= 1.5 and product.averageRating < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
-																<i class="fa fa-star{% if product.averageRating < 2.5 %}-o{% elif product.averageRating >= 2.5 and product.averageRating < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
-																<i class="fa fa-star{% if product.averageRating < 3.5 %}-o{% elif product.averageRating >= 3.5 and product.averageRating < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
-																<i class="fa fa-star{% if product.averageRating < 4.5 %}-o{% elif product.averageRating >= 4.5 and product.averageRating < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
-																&nbsp;<span style="font-size:16px">(<b>{{product.countReview}}</b> reviews)</span>
-																</span>
-															</div>
-															<h3 style="color:#d99879">{{product.name}}</h3>
-															<h5>{% if product.discount != 0.00 %}<del>${{product.discount}}</del>{% endif %} ${{product.price}}</h5>
-															<p>{{product.description}}.</p>
-															<div class="list-btn">
 
-																<a href="{{product.get_prodcut_details_url}}" class="btn btn-warning" style="background:none; color:#f4cca4">View Details <i class="mdi mdi-eye"></i></a>
-																<a href="{% url 'cart:add_cart' product.id %}" class="btn " style="color:#1c1427;background:#f4cca4">add to cart <i class="mdi mdi-cart-outline"></i></a>
-																
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-										</div>
+
+
+        <!-- Fruits Shop Start-->
+        <div class="container-fluid fruite py-5">
+            <div class="container py-5">
+                <h1 class="mb-4">Fresh fruits shop</h1>
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <div class="row g-4">
+                            <div class="col-xl-3">
+                                <div class="input-group w-100 mx-auto d-flex">
+                                    <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                                    <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-6"></div>
+                            <div class="col-xl-3">
+                                
+                                <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
+                                    <label for="fruits">Default Sorting:</label>
+                                    <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3" form="fruitform">
+                                        <option value="volvo">Nothing</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category.get_category_slug_url }}">{{category.name}}</option>
                                         {% endfor %}
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div  class="col-sm-12">
-									<div style="background:#40394a" class="pagnation-ul">
-									{% if products.has_other_pages %}
-										<ul class="clearfix">
-											{% if products.has_previous %}
-											<li><a href="?page={{products.previous_page_number}}"><i style="color:#f4cca4" class="mdi mdi-arrow-left-bold"></i></a></li>
-											{% else %}
-											<li><a href="#"><i class="mdi mdi-arrow-left-bold"></i></a></li>
-											{% endif %}
-											
-											{% for x in products.paginator.page_range %}
-												{% if products.number == x %}
-												<li ><a href="#">{{x}}</a></li>
-												{% else %}
-												<li><a  style="color:#f4cca4" href="?page={{x}}">{{x}}</a></li>
-												{% endif %}
-											{% endfor %}
-											
-											{% if products.has_next %}
-											<li ><a href="?page={{products.next_page_number}}"><i style="color:#f4cca4" class="mdi mdi-arrow-right-bold"></i></a></li>
-											{% else %}
-											<li><a  href="#"><i class="mdi mdi-arrow-right-bold"></i></a></li>
-											{% endif %}
-										</ul>
-									{% endif %}
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	
+                                    </select>
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-lg-3">
+                                <div class="row g-4">
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            {% if category_slug != None %}
+                                            <h2 style="color:#f4cca4;text-transform: capitalize;">{{category_slug}}</h2>
+                                            {% else %}
+                                            <h4>Categories</h4>
+                                            {% endif %}
+                                            {% if category_slug != None %}
+                                            <ul class="list-unstyled fruite-categorie">
+                                                <li>
+                                                    <div class="d-flex justify-content-between fruite-name">
+                                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>{{category_slug}}</a>
+                                                        <span>(3)</span>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                            
+                    
+                                </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="row g-4 justify-content-center">
+                                    {% for product in products %}
+                                    <div class="col-md-6 col-lg-6 col-xl-4">
+                                        <div class="rounded position-relative fruite-item">
+                                            <div class="fruite-img">
+                                                <a href="{{ product.get_prodcut_details_url }}"><img src="{{ product.image.url }}"  class="img-fluid w-100 rounded-top" alt=""></a>
+                                            </div>
+                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
+                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                <h4><a href="{{ product.get_prodcut_details_url }}">{{ product.name }}</a></h4>
+                                                <div class="d-flex justify-content-between flex-lg-wrap">
+                                                    <p class="text-dark fs-5 fw-bold mb-0">${{ product.price }}</p>
+                                                    <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    <div class="col-12">
+                                        <div class="pagination d-flex justify-content-center mt-5">
+                                            <a href="#" class="rounded">&laquo;</a>
+                                            <a href="#" class="active rounded">1</a>
+                                            <a href="#" class="rounded">2</a>
+                                            <a href="#" class="rounded">3</a>
+                                            <a href="#" class="rounded">4</a>
+                                            <a href="#" class="rounded">5</a>
+                                            <a href="#" class="rounded">6</a>
+                                            <a href="#" class="rounded">&raquo;</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fruits Shop End-->
+
+
 {% endblock content %}

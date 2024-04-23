@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+from decouple import config
+# import env
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,8 +24,9 @@ INSTALLED_APPS = [
     'shop',
     'cart',
     'orders',
-
+    'django_extensions',
     'storages',
+    'django_twilio',
 ]
 
 MIDDLEWARE = [
@@ -119,10 +122,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -130,7 +130,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [
     BASE_DIR / 'core/static'
@@ -176,5 +176,11 @@ if os.getcwd() == '/app' :
 
 #payment gateway
 
-razorpay_id = 'rzp_test_RWvarmafjWf76A'
-razorpay_account_id = 'IGDRWGr72RdxheSO6BlnVbXl'        
+    
+
+
+
+# #twilio
+# Twillo_api_key = env('Twillo_api_key')
+# Twillo_ACCOUNT_SID = env('Twillo_ACCOUNT_SID')
+# Twillo_Auth_token = env('Twillo_Auth_token')
