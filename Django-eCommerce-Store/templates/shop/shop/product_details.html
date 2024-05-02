@@ -44,16 +44,18 @@
             <div class="col-lg-8 col-xl-9">
                 <div class="row g-4">
                     <div class="col-lg-6">
-                        <div class="border rounded">
+                        <div class="border rounded" style="max-width: 250px;max-height: -450px;">
                             <a href="#">
-                                <img src="{{ single_product.image.url }}" class="img-fluid rounded" alt="Image">
+                                <img src="{{ single_product.image.url }}" class="img-fluid rounded" style="max-width: 250px;max-height: -450px;" alt="Image">
                             </a>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <h4 class="fw-bold mb-3">{{ single_product.name }}</h4>
                         <p class="mb-3">{{ single_product.category }}</p>
-                        <h5 class="fw-bold mb-3">{{ single_product.price }}</h5>
+                        <h5 class="fw-bold mb-3">{{ single_product.price }} Rs.</h5>
+                        <h5 class="fw-bold mb-3">{{ single_product.quantity }}</h5>
+                        
                         <div class="d-flex mb-4">
                             <i class="fa fa-star text-secondary"></i>
                             <i class="fa fa-star text-secondary"></i>
@@ -63,17 +65,51 @@
                         </div>
                         <form action="{% url 'cart:add_cart' single_product.id %}" method="post">
                             {% csrf_token %}
-                            {% if single_product.variation_set.colors %}
+                            {% if single_product.variation_set.marination %}
                             <div class="mb-3">
-                                <label for="masala">Select Masala:</label>
-                                <select class="form-select" id="masala" name="masala">
+                                <label for="marination">Select Marination: (25 extra for each masala)</label>
+                                <select class="form-select" id="marination" name="marination">
                                     <option value="no" selected>No</option>
-                                    {% for x in single_product.variation_set.colors %}
+                                    {% for x in single_product.variation_set.marination %}
                                     <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             {% endif %}
+                            {% if single_product.variation_set.cut_pieces %}
+                            <div class="mb-3">
+                                <label for="cut_pieces">Cut into Pieces:</label>
+                                <select class="form-select" id="cut_pieces" name="cut_pieces">
+                                    <option value="no" selected>No</option>
+                                    {% for x in single_product.variation_set.cut_pieces %}
+                                    <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+                            {% if single_product.variation_set.cut_fillings %}
+                            <div class="mb-3">
+                                <label for="cut_fillings">Cut for Fillings:</label>
+                                <select class="form-select" id="cut_fillings" name="cut_fillings">
+                                    <option value="no" selected>No</option>
+                                    {% for x in single_product.variation_set.cut_fillings %}
+                                    <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+                            {% if single_product.variation_set.cleaned_deveined %}
+                            <div class="mb-3">
+                                <label for="cleaned_deveined">Cleaned and Deveined:</label>
+                                <select class="form-select" id="cleaned_deveined" name="cleaned_deveined">
+                                    <option value="no" selected>No</option>
+                                    {% for x in single_product.variation_set.cleaned_deveined %}
+                                    <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+                            <!-- Add similar blocks for other variations if needed -->
                             {% if single_product.stock <= 0 %}
                             <div style="font-size: 18px" class="alert alert-info text-center" role="alert">
                                 <b>This Product Not In Stock Now, Try Later</b>
@@ -96,41 +132,7 @@
                         </div>
                     </div>
                 </div>
-                <form action="#">
-                    <h4 class="mb-5 fw-bold">Leave a Reply</h4>
-                    <div class="row g-4">
-                        <div class="col-lg-6">
-                            <div class="border-bottom rounded">
-                                <input type="text" class="form-control border-0 me-4" placeholder="Your Name *">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="border-bottom rounded">
-                                <input type="email" class="form-control border-0" placeholder="Your Email *">
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="border-bottom rounded my-4">
-                                <textarea name="" id="" class="form-control border-0" cols="30" rows="8" placeholder="Your Review *" spellcheck="false"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="d-flex justify-content-between py-3 mb-5">
-                                <div class="d-flex align-items-center">
-                                    <p class="mb-0 me-3">Please rate:</p>
-                                    <div class="d-flex align-items-center" style="font-size: 12px;">
-                                        <i class="fa fa-star text-muted"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                    </div>
-                                </div>
-                                <a href="#" class="btn border border-secondary text-primary rounded-pill px-4 py-3">Post Comment</a>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+        
             </div>
         </div>
     </div>

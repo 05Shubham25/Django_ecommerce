@@ -156,7 +156,7 @@ EMAIL_PORT= 587
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_USER = 'contentwriter715@gmail.com'
-EMAIL_HOST_PASSWORD = 'fvvisnjjirnpuazh'
+EMAIL_HOST_PASSWORD = 'yourpassword'
 
 
 # AWS_QUERYSTRING_AUTH = False
@@ -176,6 +176,7 @@ if os.getcwd() == '/app' :
 
 #payment gateway
 
+# <<<<<<< HEAD
     
 
 
@@ -184,3 +185,7 @@ if os.getcwd() == '/app' :
 # Twillo_api_key = env('Twillo_api_key')
 # Twillo_ACCOUNT_SID = env('Twillo_ACCOUNT_SID')
 # Twillo_Auth_token = env('Twillo_Auth_token')
+# =======
+razorpay_id = 'rzp_test_RWvarmafjWf76A'
+razorpay_account_id = 'IGDRWGr72RdxheSO6BlnVbXl'        
+# >>>>>>> 75a144692bdb481bc8be42aaf5925e697d9ac90e

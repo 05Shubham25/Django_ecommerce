@@ -26,6 +26,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(max_length=300, blank=True)
+    quantity = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     discount = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     image = models.ImageField(upload_to='photos/products')
@@ -66,17 +67,50 @@ class Product(models.Model):
     
 
 
-class VariationManager(models.Manager):
-    def colors(self):
-        return super(VariationManager, self).filter(variation_category='color', is_active=True)
+# class VariationManager(models.Manager):
+#     def colors(self):
+#         return super(VariationManager, self).filter(variation_category='color', is_active=True)
 
-    def sizes(self):
-        return super(VariationManager, self).filter(variation_category='size', is_active=True)
+#     def sizes(self):
+#         return super(VariationManager, self).filter(variation_category='size', is_active=True)
 
+# variation_category_choices = (
+#     ('color', 'color'),
+#     ('size', 'size'),
+# )
+
+# class Variation(models.Model):
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+#     variation_category = models.CharField(max_length=100, choices=variation_category_choices)
+#     variation_value = models.CharField(max_length=100)
+#     is_active = models.BooleanField(default=True)
+#     created = models.DateTimeField(auto_now_add=True)
+#     objects = VariationManager()
+
+#     def __str__(self):
+#         return self.variation_value
+
+
+# Updated variation_category_choices with new choices
 variation_category_choices = (
-    ('color', 'color'),
-    ('size', 'size'),
+    ('marination', 'Marination'),  # New choice for marination
+    ('cut_pieces', 'Cut into Pieces'),
+    ('cut_fillings', 'Cut for Fillings'),
+    ('cleaned_deveined', 'Cleaned and Deveined'),
 )
+
+class VariationManager(models.Manager):
+    def marination(self):
+        return super(VariationManager, self).filter(variation_category='marination', is_active=True)
+
+    def cut_pieces(self):
+        return super(VariationManager, self).filter(variation_category='cut_pieces', is_active=True)
+
+    def cut_fillings(self):
+        return super(VariationManager, self).filter(variation_category='cut_fillings', is_active=True)
+
+    def cleaned_deveined(self):
+        return super(VariationManager, self).filter(variation_category='cleaned_deveined', is_active=True)
 
 class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -122,3 +156,8 @@ class ProductGallery(models.Model):
 
     def __str__(self):
         return self.product.name
+
+
+
+class image_slider(models.Model):
+    image = models.ImageField(upload_to='static/img/slider')

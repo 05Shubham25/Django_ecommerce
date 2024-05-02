@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 # from django.core.mail import EmailMessage
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.contrib import messages
 import razorpay
 
@@ -14,7 +14,7 @@ from cart.models import CartItem, Cart
 from cart.views import _cart_id
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import OrderForm
-from .models import Order, Payment, OrderProduct
+from .models import Order, Payment, OrderProduct, TimingSlot
 from shop.models import Product
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
@@ -177,6 +177,14 @@ def payment(request, total=0, quantity=0):
             data.ip = request.META.get('REMOTE_ADDR')
             data.payment_method = 'Cash On Delivery'  # Mark payment method as COD
             data.status = 'New'  # Set order status to New
+            timing_slot_id = request.POST.get('timing_slot')
+            if timing_slot_id:
+                try:
+                    timing_slot = TimingSlot.objects.get(slot=timing_slot_id)
+                except TimingSlot.DoesNotExist:
+                    raise Http404("Timing slot not found")
+                data.timing_slot = timing_slot
+                data.save()
             data.save()
 
             # Generate order number
@@ -200,10 +208,18 @@ def payment(request, total=0, quantity=0):
                 order_product.ordered = True
                 order_product.save()
 
+                # add variation to OrderProduct table
+                cart_item = CartItem.objects.get(id=item.id)
+                product_variation = cart_item.variation.all()
+                order_product = OrderProduct.objects.get(id=order_product.id)
+                order_product.variations.set(product_variation)
+                order_product.save()
+
                 # Reduce the quantity of sold products
                 product = Product.objects.get(id=item.product_id)
                 product.stock -= item.quantity
                 product.save()
+                
 
             # Clear Cart
             CartItem.objects.filter(user=current_user).delete()

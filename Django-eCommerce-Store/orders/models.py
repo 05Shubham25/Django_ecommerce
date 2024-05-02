@@ -2,7 +2,6 @@ from django.db import models
 from accounts.models import Account
 from shop.models import Product, Variation
 
-
 class Payment(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     payment_id = models.CharField(max_length=100)
@@ -14,6 +13,16 @@ class Payment(models.Model):
     def __str__(self):
         return self.payment_id
 
+class TimingSlot(models.Model):
+    SLOT_CHOICES = (
+        ('pre_order', 'Pre order - 9-11am'),
+        ('morning_delivery', 'Morning orders delivered by 12-1pm'),
+        ('evening_slot', 'Evening slot 7-9pm'),
+    )
+    slot = models.CharField(max_length=20, choices=SLOT_CHOICES)
+
+    def __str__(self):
+        return self.slot
 
 class Order(models.Model):
     STATUS = (
@@ -39,6 +48,7 @@ class Order(models.Model):
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    timing_slot = models.ForeignKey(TimingSlot, on_delete=models.SET_NULL, blank=True, null=True)
 
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
@@ -49,10 +59,8 @@ class Order(models.Model):
     def hour_update(self):
         return self.created_at.strftime('%H:%M %p')
 
-        
     def __str__(self):
         return self.first_name
-
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -65,14 +73,12 @@ class OrderProduct(models.Model):
     ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def sub_total(self):
         return self.quantity * self.product_price
 
-    
     def order_created(self):
         return self.created_at.strftime('%B %d %Y')
-
 
     def __str__(self):
         return self.product.name

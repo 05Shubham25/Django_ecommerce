@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Variation, ReviewRating, ProductGallery
+from .models import Category, Product, Variation, ReviewRating, ProductGallery, image_slider
 import admin_thumbnails
 
 @admin_thumbnails.thumbnail('image')
@@ -36,3 +36,6 @@ admin.site.register(ReviewRating)
 @admin.register(ProductGallery)
 class ProductGalleryAdmin(admin.ModelAdmin):
     list_filter = ['product']
+
+
+admin.site.register(image_slider)

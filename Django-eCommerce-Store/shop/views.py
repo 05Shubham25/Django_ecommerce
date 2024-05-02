@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
-from .models import Product, Category
+from .models import Product, Category,image_slider
 from cart.views import _cart_id
 from cart.models import CartItem
 from .models import ReviewRating
@@ -15,8 +15,10 @@ from .models import ProductGallery
 def home(request):
     products = Product.objects.all().filter(is_available=True)
     
+    
     context = {
         'products' : products,
+        'image_slider':image_slider.objects.all(),
     }
     return render(request, 'shop/index.html', context)
 
