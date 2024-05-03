@@ -1,0 +1,7 @@
+Django
+pillow
+razorpay
+django-twilio
+python-decouple
+django-extensions
+requests
