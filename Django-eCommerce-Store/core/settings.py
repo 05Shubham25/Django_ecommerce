@@ -174,18 +174,6 @@ if os.getcwd() == '/app' :
 
 
 
-#payment gateway
-
-# <<<<<<< HEAD
-    
 
 
 
-# #twilio
-# Twillo_api_key = env('Twillo_api_key')
-# Twillo_ACCOUNT_SID = env('Twillo_ACCOUNT_SID')
-# Twillo_Auth_token = env('Twillo_Auth_token')
-# =======
-razorpay_id = 'rzp_test_RWvarmafjWf76A'
-razorpay_account_id = 'IGDRWGr72RdxheSO6BlnVbXl'        
-# >>>>>>> 75a144692bdb481bc8be42aaf5925e697d9ac90e
