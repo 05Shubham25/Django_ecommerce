@@ -26,7 +26,7 @@
 <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6">Shop</h1>
 </div>
-<!-- Single Page Header End -->
+<!-- Single Page Header End   -->
 
 <!-- Fruits Shop Start-->
 <div class="container-fluid fruite py-5">
@@ -44,11 +44,20 @@
                     <div class="col-6"></div>
                     <div class="col-xl-3">
                         <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                            <label for="fruits">Default Sorting:</label>
-                            <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3">
-                                <option value="volvo">Nothing</option>
+                            <label for="categories">Categories:</label>
+                            <select id="categories" name="categorylist" class="border-0 form-select-sm bg-light me-3" onchange="window.location.href=this.value">
+                                {% if category_slug %}
+                                    <option value="{% url 'shop:shop' %}" disabled selected>{{ category_slug|title }}</option>
+                                {% else %}
+                                    <option value="{% url 'shop:shop' %}" selected>Select Categories</option>
+                                {% endif %}
+                                
+                                <option value="{% url 'shop:shop' %}">All Categories</option>
                                 {% for category in categories %}
-                                <option value="{{ category.get_category_slug_url }}">{{ category.name }}</option>
+                                    <option value="{{ category.get_category_slug_url }}" 
+                                        {% if category_slug == category.slug %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -90,7 +99,7 @@
                                     <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                         <h4><a href="{{ product.get_prodcut_details_url }}">{{ product.name }}</a></h4>
                                         <div class="d-flex justify-content-between flex-lg-wrap">
-                                            <p class="text-dark fs-5 fw-bold mb-0">${{ product.price }}</p>
+                                            <p class="text-dark fs-5 fw-bold mb-0">₹{{ product.price }}</p>
                                             <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
                                         </div>
                                     </div>
@@ -99,14 +108,28 @@
                             {% endfor %}
                             <div class="col-12">
                                 <div class="pagination d-flex justify-content-center mt-5">
-                                    <a href="#" class="rounded">&laquo;</a>
-                                    <a href="#" class="active rounded">1</a>
-                                    <a href="#" class="rounded">2</a>
-                                    <a href="#" class="rounded">3</a>
-                                    <a href="#" class="rounded">4</a>
-                                    <a href="#" class="rounded">5</a>
-                                    <a href="#" class="rounded">6</a>
-                                    <a href="#" class="rounded">&raquo;</a>
+                                    <!-- Previous Page -->
+                                    {% if products.has_previous %}
+                                        <a href="?page={{ products.previous_page_number }}" class="rounded">&laquo;</a>
+                                    {% else %}
+                                        <a href="#" class="rounded disabled">&laquo;</a>
+                                    {% endif %}
+                            
+                                    <!-- Page Numbers -->
+                                    {% for x in products.paginator.page_range %}
+                                        {% if products.number == x %}
+                                            <a href="#" class="active rounded">{{ x }}</a>
+                                        {% else %}
+                                            <a href="?page={{ x }}" class="rounded">{{ x }}</a>
+                                        {% endif %}
+                                    {% endfor %}
+                            
+                                    <!-- Next Page -->
+                                    {% if products.has_next %}
+                                        <a href="?page={{ products.next_page_number }}" class="rounded">&raquo;</a>
+                                    {% else %}
+                                        <a href="#" class="rounded disabled">&raquo;</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
