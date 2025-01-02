@@ -60,23 +60,24 @@
                         </div>
                         <form action="{% url 'cart:add_cart' single_product.id %}" method="post">
                             {% csrf_token %}
+                            
+                            {% if single_product.variation_set.cut_pieces %}
+                            <div class="mb-3">
+                                <label for="cut_pieces">How to cut:</label>
+                                <select class="form-select" id="cut_pieces" name="cut_pieces">
+                                    <option value="no" selected>No</option>
+                                    {% for x in single_product.variation_set.cut_pieces %}
+                                    <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
                             {% if single_product.variation_set.marination %}
                             <div class="mb-3">
                                 <label for="marination">Select Marination: (25 extra for each masala)</label>
                                 <select class="form-select" id="marination" name="marination">
                                     <option value="no" selected>No</option>
                                     {% for x in single_product.variation_set.marination %}
-                                    <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            {% endif %}
-                            {% if single_product.variation_set.cut_pieces %}
-                            <div class="mb-3">
-                                <label for="cut_pieces">Cut into Pieces:</label>
-                                <select class="form-select" id="cut_pieces" name="cut_pieces">
-                                    <option value="no" selected>No</option>
-                                    {% for x in single_product.variation_set.cut_pieces %}
                                     <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
                                     {% endfor %}
                                 </select>

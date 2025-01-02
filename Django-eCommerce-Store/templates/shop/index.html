@@ -9,30 +9,29 @@
     <div class="container py-5">
         <div class="row g-5 align-items-center">
             <div class="col-md-12 col-lg-7">
-                <h4 style="font-size: xx-large;font-weight: 900; font-size: 40px;" class="mb-3 text-secondary">100%
-                    Fresh Fishes</h4>
-                <h1 class="mb-5 display-3 text-primary">Straight from the BOAT</h1>
-                <div class="position-relative mx-auto">
-                    
-                        <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="number"
+                <div class="position-relative mx-auto" style="width:50%;">
+                    <form action="{% url 'shop:search' %}" method="GET">
+                        <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="text" name="keyword" 
                             placeholder="Search">
                         <button type="submit"
                             class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100"
-                            style="top: 0; right: 25%;">Submit Now</button>
-                    
+                            style="top: 0; right: 25%;">Search</button>
+                    </form>
                 </div>
+                <h4 style="font-size: xx-large;font-weight: 900; font-size: 40px;" class="mb-3 text-secondary">100% Fresh Fishes</h4>
+                <h1 class="mb-5 display-3 text-primary">Straight from the BOAT</h1>
             </div>
             <div class="col-md-12 col-lg-5">
                 <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
                     <div class="carousel-inner" role="listbox">
 
                         <div class="carousel-item active rounded">
-                            <img src="{% static 'assets/img/1.jpg' %}"
+                            <img src="{% static 'assets/img/3.jpg' %}"
                                 class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
 
                         </div>
                         <div class="carousel-item rounded">
-                            <img src="{% static 'assets/img/3.jpg' %}" class="img-fluid w-100 h-100 rounded"
+                            <img src="{% static 'assets/img/1.jpg' %}" class="img-fluid w-100 h-100 rounded"
                                 alt="Second slide">
 
                         </div>
@@ -71,7 +70,7 @@
                     </div>
                     <div class="featurs-content text-center">
                         <h5>Free Shipping</h5>
-                        <p class="mb-0">Only NearBy areas Only Else 50 Rs. Charges applicable</p>
+                        <p class="mb-0">For only nearby areas otherwise 50₹ Charges applicable</p>
                     </div>
                 </div>
             </div>
@@ -92,8 +91,8 @@
                         <i class="fas fa-exchange-alt fa-3x text-white"></i>
                     </div>
                     <div class="featurs-content text-center">
-                        <h5>Seasonal Stocks</h5>
-                        <p class="mb-0">Freshness Fuarantee</p>
+                        <h5>Seasonal Fish of the Day</h5>
+                        <p class="mb-0">Freshness Guaranted</p>
                     </div>
                 </div>
             </div>
@@ -130,13 +129,6 @@
                                 <span class="text-dark" style="width: 130px;">All Products</span>
                             </a>
                         </li>
-                        <!-- {% for category in categories %}
-                                <li class="nav-item">
-                                    <a class="d-flex py-2 m-2 bg-light rounded-pill" data-bs-toggle="pill" href="{{ category.get_category_slug_url }}">
-                                        <span class="text-dark" style="width: 130px;">{{category.name}}</span>
-                                    </a>
-                                </li>
-                                {% endfor %} -->
                     </ul>
                 </div>
             </div>
@@ -163,7 +155,7 @@
                                             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
                                                 incididunt</p>
                                             <div class="d-flex justify-content-between flex-lg-wrap">
-                                                <p class="text-dark fs-5 fw-bold mb-0">${{product.price}}</p>
+                                                <p class="text-dark fs-5 fw-bold mb-0">₹{{product.price}}</p>
                                                 <a href="#"
                                                     class="btn border border-secondary rounded-pill px-3 text-primary"><i
                                                         class="fa fa-shopping-bag me-2 text-primary"></i> Add to
@@ -433,19 +425,7 @@
                     </div>
                 </a>
             </div>
-            <br>
-            <div class="col-md-6 col-lg-3 mb-4">
-                <a href="#" class="d-block">
-                    <div class="service-item bg-dark rounded border border-dark">
-                        <img src="{% static 'assets/img/dry-fish.jpeg' %}" class="img-fluid rounded-top w-100" alt="">
-                        <div class="px-4 rounded-bottom">
-                            <div class="service-content bg-light text-center p-4 rounded">
-                                <h5 class="text-primary">DRY FISH</h5>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
+
             <br>
             <div class="col-md-6 col-lg-3 mb-4">
                 <a href="#" class="d-block">
@@ -454,6 +434,19 @@
                         <div class="px-4 rounded-bottom">
                             <div class="service-content bg-secondary text-center p-4 rounded">
                                 <h5 class="text-white">PICKELS</h5>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <br>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <a href="#" class="d-block">
+                    <div class="service-item bg-dark rounded border border-dark">
+                        <img src="{% static 'assets/img/dry-fish.jpeg' %}" class="img-fluid rounded-top w-100" alt="">
+                        <div class="px-4 rounded-bottom">
+                            <div class="service-content bg-light text-center p-4 rounded">
+                                <h5 class="text-primary">DRY FISH</h5>
                             </div>
                         </div>
                     </div>
