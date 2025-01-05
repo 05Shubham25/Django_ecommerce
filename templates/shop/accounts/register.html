@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}E-Shop{% endblock title %}
+{% block content %}
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">404 Error</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">404</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+<!-- Registration Form Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h2 class="text-center mb-4">Register for Your Account</h2>
+                <form class="login100-form validate-form" action="{% url 'accounts:register' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="wrap-input100 validate-input" data-validate="First name is required">
+                        <input class="input100" type="text" name="first_name" placeholder="First Name" required>
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input" data-validate="Last name is required">
+                        <input class="input100" type="text" name="last_name" placeholder="Last Name" required>
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input" data-validate="Phone number is required">
+                        <input class="input100" type="tel" name="Phone_number" placeholder="Phone" required>
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                        <input class="input100" type="email" name="email" placeholder="Email" required>
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input" data-validate="Password is required">
+                        <input class="input100" type="password" name="password" placeholder="Password" required>
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input" data-validate="Confirm password is required">
+                        <input class="input100" type="password" name="confirm-password" placeholder="Confirm Password" required>
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="container-login100-form-btn">
+                        <div class="wrap-login100-form-btn">
+                            <div class="login100-form-bgbtn"></div>
+                            <button class="login100-form-btn">Register</button>
+                        </div>
+                    </div>
+                    <br><br><br>
+                    <span style="font-size:17px" class="txt1">Have an account?</span>
+                    <a style="font-size:17px; color:#d99879" class="txt2" href="{% url 'accounts:login' %}">Log in</a>
+                    <br><br><hr>
+                    <a href="{% url 'shop:home' %}" style="background:#f4cca4;color:#1c1427 " class="btn btn-warning"><i class="fas fa-angle-double-left"></i>&nbsp;&nbsp;  Back to Home</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Registration Form End -->
+
+{% endblock content %}

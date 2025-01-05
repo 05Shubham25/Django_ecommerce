@@ -1,0 +1,111 @@
+<!-- checkout.html -->
+{% extends '../../../base.html' %}
+{% load static %}
+{% block title %}Checkout{% endblock title %}
+{% block content %}
+<!-- pages-title-start -->
+<div class="pages-title section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="pages-title-text text-center">
+                    <h2 class="text-white">Checkout</h2>
+                    <ul class="text-left breadcrumb">
+                        <li><a class="text-muted" href="/">Home</a></li>
+                        <li class="text-muted"><span>//</span> Checkout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Checkout</h1>
+</div>
+<!-- Single Page Header End -->
+{% include "includes/alerts.html" %}
+<!-- pages-title-end -->
+<!-- Checkout content section start -->
+<section class="pages checkout section-padding">
+    <form action="{% url 'orders:payment' %}" method="post" class="col-sm-6">
+        <div class="container">
+            <div class="row">
+                {% csrf_token %}
+                <div class="main-input single-cart-form padding-60">
+                    <div class="log-title text-center">
+                        <h3 class="text-muted">Billing Address</h3>
+                    </div>
+                    <div class="custom-input">
+                        <input type="text" name="first_name" class="form-control" placeholder="First Name" required />
+                        <br>
+                        <input type="text" name="last_name" class="form-control" placeholder="Last Name" required />
+                        <br>
+                        <input type="email" name="email" class="form-control" placeholder="Email" required />
+                        <br>
+                        <input type="tel" name="phone" class="form-control" placeholder="Phone Number" required />
+                        <br>
+                        <textarea rows="2" class="form-control" placeholder="Address" name="address" required></textarea>
+                        
+                        <label for="timing_slot">Select Timing Slot:</label>
+                        <select id="timing_slot" name="timing_slot" class="form-control" required>
+                            <option value="pre_order">Pre Order - 9-11 am</option>
+                            <option value="morning_delivery">Morning orders delivered by 12-1 pm</option>
+                            <option value="evening_slot">Evening Slot - 7-9 pm</option>
+                        </select>
+                        <input type="hidden" id="selected_timing_slot" name="selected_timing_slot" value="">
+                        <br>
+                        <textarea rows="2" class="form-control" placeholder="Order Notes" name="order_note"></textarea>
+                        <br>
+
+                    </div>
+                </div><br>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="padding-60">
+                        <div class="log-title text-center">
+                            <h3 class="text-muted">Our Order</h3>
+                        </div>
+                        <div class="cart-form-text pay-details table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-white bg-dark">Product</th>
+                                        <th class="text-white bg-dark">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for cart_item in cart_items %}
+                                    <tr>
+                                        <td>{{ cart_item.product.name }} x {{ cart_item.quantity }}</td>
+                                        <td>₹{{ cart_item.sub_total }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <th>Order total</th>
+                                        <td>₹{{ order_total }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="submit-text">
+                                <button type="submit" class="btn btn-warning" style="width: 100%; text-transform: capitalize;"><b>Place Order</b></button>
+                                <a href="{% url 'shop:shop' %}" class="btn btn-secondary" style="width: 100%; text-transform: capitalize;"><b>Cancel</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const timingSlotSelect = document.getElementById('timing_slot');
+        const selectedTimingSlotInput = document.getElementById('selected_timing_slot');
+    
+        timingSlotSelect.addEventListener('change', function() {
+            selectedTimingSlotInput.value = this.value;
+        });
+    });
+</script>
+{% endblock content %}

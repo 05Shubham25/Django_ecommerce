@@ -1,0 +1,78 @@
+{% extends '../../base.html' %}
+{% load static %}
+{% block title %}Search{% endblock title %}
+{% block content %}
+
+{% if products_count <= 0 %}
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="alert alert-info text-center py-4" role="alert">
+                <h4 class="mb-0">No Results Found</h4>
+                <a href="{% url 'shop:shop' %}" class="btn btn-primary mt-3">Go To Shop</a>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <!-- Single Page Header start -->
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Search Results</h1>
+        <p class="text-center text-white">{{products_count}} Results Found</p>
+    </div>
+    <!-- Single Page Header End -->
+
+    <!-- Products Section Start -->
+    <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+            <div class="row g-4 justify-content-center">
+                {% for product in products %}
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                    <div class="rounded position-relative fruite-item">
+                        <div class="fruite-img">
+                            <a href="{{ product.get_prodcut_details_url }}">
+                                <img src="{{ product.image.url }}" class="img-fluid w-100 rounded-top" alt="{{ product.name }}">
+                            </a>
+                        </div>
+                        {% if product.discount != 0.00 %}
+                        <div class="text-white bg-danger px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
+                            Discount
+                        </div>
+                        {% endif %}
+                        {% if product.new %}
+                        <div class="text-white bg-success px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">
+                            New
+                        </div>
+                        {% endif %}
+                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                            <h4><a href="{{ product.get_prodcut_details_url }}" class="text-decoration-none text-dark">{{ product.name }}</a></h4>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="fs-5 fw-bold mb-0">₹{{ product.price }}</p>
+                                <div class="rating-star">
+                                    <span class="text-primary">
+                                        <i class="fa fa-star{% if product.averageRating < 0.5 %}-o{% elif product.averageRating >= 0.5 and product.averageRating < 1 %}-half-o {% endif %}"></i>
+                                        <i class="fa fa-star{% if product.averageRating < 1.5 %}-o{% elif product.averageRating >= 1.5 and product.averageRating < 2 %}-half-o {% endif %}"></i>
+                                        <i class="fa fa-star{% if product.averageRating < 2.5 %}-o{% elif product.averageRating >= 2.5 and product.averageRating < 3 %}-half-o {% endif %}"></i>
+                                        <i class="fa fa-star{% if product.averageRating < 3.5 %}-o{% elif product.averageRating >= 3.5 and product.averageRating < 4 %}-half-o {% endif %}"></i>
+                                        <i class="fa fa-star{% if product.averageRating < 4.5 %}-o{% elif product.averageRating >= 4.5 and product.averageRating < 5 %}-half-o {% endif %}"></i>
+                                    </span>
+                                    <span class="ms-2">({{ product.countReview }} reviews)</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-3">
+                                <a href="{% url 'cart:add_cart' product.id %}" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                    <i class="fa fa-shopping-bag me-2"></i> Add to cart
+                                </a>
+                                <a href="{{ product.get_prodcut_details_url }}" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                    <i class="fa fa-eye me-2"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- Products Section End -->
+{% endif %}
+
+{% endblock %}
