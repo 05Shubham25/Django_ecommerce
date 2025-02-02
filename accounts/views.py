@@ -2,7 +2,7 @@ import requests
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages, auth   
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterationFrom, UserForm, UserProfileForm
+from .forms import UserForm, UserProfileForm , RegisterationForm
 from .models import Account
 from django.core.mail import send_mail
 # verification email
@@ -16,6 +16,8 @@ from django.core.mail import EmailMessage
 from .token import account_activation_token
 from django.conf import settings
 
+
+
 import uuid
 
 from cart.views import _cart_id
@@ -26,22 +28,18 @@ from orders.models import OrderProduct
 
 def register(request):
     if request.method == "POST":
-        form = RegisterationFrom(request.POST)
+        form = RegisterationForm(request.POST)
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            phone_number = form.cleaned_data['Phone_number']
-            email = form.cleaned_data['email']
+            user = form.save(commit=False)
             password = form.cleaned_data['password']
-            username = email.split("@")[0]
-            user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
-            user.Phone_number = phone_number
+            user.set_password(password)
+            user.username = user.email.split("@")[0]  # Generate username from email
             user.save()
             
             # Create a user profile
-            profile = UserProfile()
-            profile.user_id = user.id
-            profile.save()
+            # profile = UserProfile()
+            # profile.user_id = user.id
+            # profile.save()
 
             # USER ACTIVATION
             current_site = get_current_site(request)
@@ -52,18 +50,16 @@ def register(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
-            to_email = email
+            to_email = user.email
             send_mail(subject, message, 'contentwriter715@gmail.com', [to_email])
     
-            return redirect('/account/register/?command=verification&email='+email)
-
-    else:  # request.method == "GET"
-        form = RegisterationFrom()
+            return redirect('/account/register/?command=verification&email='+user.email)
+    else:
+        form = RegisterationForm()
 
     context = {
         'forms': form,
     }
-
     return render(request, 'shop/accounts/register.html', context)
 
 def login(request):

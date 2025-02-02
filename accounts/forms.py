@@ -1,7 +1,7 @@
 from django import forms
 from .models import Account ,UserProfile
 
-class RegisterationFrom(forms.ModelForm):
+class RegisterationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         # 'placeholder' : 'Enter Password',
         'class' : 'form-control',
@@ -15,7 +15,7 @@ class RegisterationFrom(forms.ModelForm):
         fields = ['first_name', 'last_name', 'Phone_number', 'email', 'password']
 
     def __init__(self, *args, **kwargs):
-        super(RegisterationFrom, self).__init__(*args, **kwargs)
+        super(RegisterationForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs['placeholder'] = 'First name'       #
         self.fields['last_name'].widget.attrs['placeholder'] = 'Last name'         #
         self.fields['email'].widget.attrs['placeholder'] = 'Email'#
@@ -25,7 +25,7 @@ class RegisterationFrom(forms.ModelForm):
 
     
     def clean(self):
-        cleaned_data = super(RegisterationFrom, self).clean()
+        cleaned_data = super(RegisterationForm, self).clean()
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('repeat_password')
 

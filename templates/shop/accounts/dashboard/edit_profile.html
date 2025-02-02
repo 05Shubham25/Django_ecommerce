@@ -3,100 +3,141 @@
 {% block title %}Edit Profile{% endblock title %}
 {% block content %}
 
-<div  class="pages-title section-padding">
-    <div  class="container">
-        <div  style="background:#40394a" class="row">
-            <div class="col-xs-12">
-                <div class="pages-title-text text-center">
-                    <h2 style="color:#f4cca4">Edit Profile</h2>
-                    <ul class="text-left">
-                        <li><a style="color:#d99879" href="\">Home </a></li>
-                        <li style="color:#d99879"><span> // </span>Cart</li>
-                    </ul>
+<!-- Hero Section -->
+<div class="container-fluid bg-primary py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
+                <h1 class="text-white display-4">Edit Profile</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center bg-transparent mb-0">
+                        <li class="breadcrumb-item"><a href="\" class="text-white">Home</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Edit Profile</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Section -->
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12">
+            {% include "includes/alerts.html" %}
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            {% include "includes/dashboard_slider.html" %}
+        </div>
+        
+        <!-- Main Form -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Edit Your Profile</h5>
+                    <button type="submit" form="profile-form" class="btn btn-primary">
+                        Save Changes
+                    </button>
+                </div>
+                
+                <div class="card-body">
+                    <form id="profile-form" action="{% url 'accounts:edit_profile' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <!-- Personal Information -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{user_form.first_name}}
+                                    <label>First Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{user_form.last_name}}
+                                    <label>Last Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{user_form.Phone_number}}
+                                    <label>Phone Number</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Information -->
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+                                    {{profile_form.address}}
+                                    <label>Complete Address</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    {{profile_form.city}}
+                                    <label>City</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    {{profile_form.state}}
+                                    <label>State</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    {{profile_form.country}}
+                                    <label>Country</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<section style="background:#1C1427" class="section-conten padding-y bg">
-    <br><br>
-  
-<span style="font-size:16px"><b> {% include "includes/alerts.html" %} </b></span>
-<div class="container">
-	<div class="row">
-    {% include "includes/dashboard_slider.html" %}
-	<main class="col-md-9">
-    <form style="background:#40394A; padding:20px;border-radius:10px" action="{% url 'accounts:edit_profile' %}" method="POST" enctype="multipart/form-data">
-		<article class="card">
-		<header class="card-header text-center">
-            <strong style="font-size:20px;float:left" class="d-inline-block mr-3">Edit your profile</strong>
-            <input style="float:right;width:20%;color:#1C1427;font-size:18px;font-weight: bold;" type="submit" value="Edit" class="btn btn-warning">
-        </header>
-		<div class="card-body">
-			
-            <div class="text-center">
-				<img src="{{userprofile.profile_picture.url}}" alt="Profile Picture" width="100" style="border-radius:50px;">
-			</div>
-            <br>
-			<div class="row">
-			<div class="col-md-12">
-				
-					{% csrf_token %}
-					<div class="form-row">
-						<div class="form-group col-md-6">
-							<label>First Name</label>
-							{{user_form.first_name}}
-						</div>
-						<div class="form-group col-md-6">
-							<label>Last Name</label>
-							{{user_form.last_name}}
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="form-group col-md-6">
-							<label>Phone Number</label>
-							{{user_form.Phone_number}}
-						</div>
-						<div class="form-group col-md-6">
-							<label>Profile Picture</label>
-							{{profile_form.profile_picture}}
-						</div>
-					</div>
-					<div style="margin-bottom:10px" class="col-md-12">
-						<label>Address</label>
-						{{profile_form.address}}
-					</div><br>
-					<div class="form-row">
-						<div class="form-group col-md-4">
-							<label>City</label>
-							{{profile_form.city}}
-						</div>
-						<div class="form-group col-md-4">
-							<label>State</label>
-							{{profile_form.state}}
-						</div>
-						<div class="form-group col-md-4">
-							<label>Country</label>
-							{{profile_form.country}}
-						</div>
-					</div>
-					
-				
-			</div>
 
-			</div> <!-- row.// -->
-		</div> <!-- card-body .// -->
+<!-- Custom CSS -->
+<style>
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+    }
+    .form-floating > .form-control {
+        padding: 1rem 0.75rem;
+    }
+    #profile-upload {
+        display: none;
+    }
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+    .btn-primary {
+        padding: 0.5rem 1.5rem;
+    }
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: white;
+    }
+</style>
 
-		</article> <!-- order-group.// -->
-        </form>
-	</main>
-</div> <!-- row.// -->
-</div>
+<!-- Add FontAwesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-
-<br>
-</section>
-
-
-<!-- ========================= SECTION CONTENT END// ========================= -->
 {% endblock content %}

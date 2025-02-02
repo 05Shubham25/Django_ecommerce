@@ -3,36 +3,62 @@
 {% block title %}Payment{% endblock title %}
 
 {% block content %}
-<!-- Payment page content -->
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Order Summary</h4>
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Payment</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Cart</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+
+<div class="container py-5">
+    <div class="row justify-content-center g-4">
+        <!-- Order Summary Card -->
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">Order Summary</h4>
                 </div>
-                <div class="card-body">
-                    <table class="table">
-                        <tr>
-                            <th>Order Number:</th>
-                            <td>{{ order.order_number }}</td>
-                        </tr>
-                        <tr>
-                            <th>Order Total:</th>
-                            <td>₹{{ grand_total }}</td>
-                        </tr>
-                    </table>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr class="border-bottom">
+                                    <th class="ps-0">Order Number:</th>
+                                    <td class="text-end pe-0">{{ order.order_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="ps-0">Order Total:</th>
+                                    <td class="text-end pe-0">
+                                        <span class="h4 text-primary mb-0">₹{{ grand_total }}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Payment Details</h4>
+
+        <!-- Payment Details Card -->
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">Payment Details</h4>
                 </div>
-                <div class="card-body">
-                    <button id="rzp-button" class="btn btn-primary btn-block">Pay Now</button>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-3">Secure Payment via Razorpay</h6>
+                        <p class="small text-muted mb-0">Your payment information is encrypted and secure.</p>
+                    </div>
+                    <button id="rzp-button" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-lock me-2"></i>Pay Now
+                    </button>
                 </div>
             </div>
         </div>
@@ -42,7 +68,7 @@
 <!-- Razorpay Integration -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-var options = {
+const options = {
     "key": "{{ razorpay_merchant_key }}",
     "amount": "{{ razorpay_amount }}",
     "currency": "INR",
@@ -56,15 +82,14 @@ var options = {
         "contact": "{{ order.phone }}"
     },
     "handler": function (response) {
-        // Handle the success payment
         handlePaymentSuccess(response);
     },
     "theme": {
-        "color": "#3399cc"
+        "color": "#0d6efd" // Bootstrap primary color
     }
 };
 
-var rzp = new Razorpay(options);
+const rzp = new Razorpay(options);
 
 document.getElementById('rzp-button').onclick = function(e) {
     rzp.open();
@@ -72,6 +97,11 @@ document.getElementById('rzp-button').onclick = function(e) {
 }
 
 function handlePaymentSuccess(response) {
+    // Show loading state
+    const payButton = document.getElementById('rzp-button');
+    payButton.disabled = true;
+    payButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+
     fetch("{% url 'orders:payment_verify' %}", {
         method: 'POST',
         headers: {
@@ -90,11 +120,15 @@ function handlePaymentSuccess(response) {
         if (data.success) {
             window.location.href = "{% url 'orders:order_completed' %}?order_number=" + data.order_number + "&payment_id=" + data.transID;
         } else {
+            payButton.disabled = false;
+            payButton.innerHTML = 'Pay Now';
             alert('Payment failed: ' + data.error);
         }
     })
     .catch(error => {
         console.error('Error:', error);
+        payButton.disabled = false;
+        payButton.innerHTML = 'Pay Now';
         alert('Something went wrong. Please try again.');
     });
 }

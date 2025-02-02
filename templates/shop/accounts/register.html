@@ -1,67 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - E-Shop</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .registration-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #344767;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control {
+            height: 50px;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        .form-control:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78,115,223,0.15);
+            background-color: #ffffff;
+        }
+        
+        .btn-register {
+            background: linear-gradient(to right, #4e73df, #224abe);
+            color: white;
+            padding: 15px 30px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            border-radius: 10px;
+            height: 50px;
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78,115,223,0.3);
+            color: white;
+        }
+
+        .page-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1920/300');
+            background-position: center;
+            background-size: cover;
+            padding: 80px 0;
+            margin-bottom: 50px;
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            z-index: 10;
+        }
+
+        .form-check-label {
+            color: #495057;
+        }
+
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            background-image: none;
+        }
+
+        .invalid-feedback {
+            font-size: 0.812rem;
+        }
+    </style>
+</head>
+<body>
+
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}E-Shop{% endblock title %}
 {% block content %}
 
-<!-- Single Page Header start -->
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6">404 Error</h1>
-    <ol class="breadcrumb justify-content-center mb-0">
-        <li class="breadcrumb-item"><a href="#">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Pages</a></li>
-        <li class="breadcrumb-item active text-white">404</li>
-    </ol>
+<div class="container-fluid page-header">
+    <div class="text-center">
+        <h1 class="display-4 text-white fw-bold mb-4">Create Your Account</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="#" class="text-white text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" class="text-white text-decoration-none">Pages</a></li>
+                <li class="breadcrumb-item active text-white">Register</li>
+            </ol>
+        </nav>
+    </div>
 </div>
-<!-- Single Page Header End -->
 
-<!-- Registration Form Start -->
-<div class="container-fluid py-5">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <h2 class="text-center mb-4">Register for Your Account</h2>
-                <form class="login100-form validate-form" action="{% url 'accounts:register' %}" method="POST">
-                    {% csrf_token %}
-                    <div class="wrap-input100 validate-input" data-validate="First name is required">
-                        <input class="input100" type="text" name="first_name" placeholder="First Name" required>
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="wrap-input100 validate-input" data-validate="Last name is required">
-                        <input class="input100" type="text" name="last_name" placeholder="Last Name" required>
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="wrap-input100 validate-input" data-validate="Phone number is required">
-                        <input class="input100" type="tel" name="Phone_number" placeholder="Phone" required>
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
-                        <input class="input100" type="email" name="email" placeholder="Email" required>
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="wrap-input100 validate-input" data-validate="Password is required">
-                        <input class="input100" type="password" name="password" placeholder="Password" required>
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="wrap-input100 validate-input" data-validate="Confirm password is required">
-                        <input class="input100" type="password" name="confirm-password" placeholder="Confirm Password" required>
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="container-login100-form-btn">
-                        <div class="wrap-login100-form-btn">
-                            <div class="login100-form-bgbtn"></div>
-                            <button class="login100-form-btn">Register</button>
-                        </div>
-                    </div>
-                    <br><br><br>
-                    <span style="font-size:17px" class="txt1">Have an account?</span>
-                    <a style="font-size:17px; color:#d99879" class="txt2" href="{% url 'accounts:login' %}">Log in</a>
-                    <br><br><hr>
-                    <a href="{% url 'shop:home' %}" style="background:#f4cca4;color:#1c1427 " class="btn btn-warning"><i class="fas fa-angle-double-left"></i>&nbsp;&nbsp;  Back to Home</a>
-                </form>
+<div class="container py-5">
+    <div class="registration-container p-5">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form action="{% url 'accounts:register' %}" method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">First Name</label>
+                {{ forms.first_name }}
+                {% if forms.first_name.errors %}
+                <div class="invalid-feedback">{{ forms.first_name.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Last Name</label>
+                {{ forms.last_name }}
+                {% if forms.last_name.errors %}
+                <div class="invalid-feedback">{{ forms.last_name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                {{ forms.email }}
+                {% if forms.email.errors %}
+                <div class="invalid-feedback">{{ forms.email.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                {{ forms.Phone_number }}
+                {% if forms.Phone_number.errors %}
+                <div class="invalid-feedback">{{ forms.Phone_number.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group password-field">
+                <label class="form-label">Password</label>
+                {{ forms.password }}
+                <span class="password-toggle" onclick="togglePassword('password')">
+                    <i class="fas fa-eye"></i>
+                </span>
+                {% if forms.password.errors %}
+                <div class="invalid-feedback">{{ forms.password.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group password-field">
+                <label class="form-label">Confirm Password</label>
+                {{ forms.repeat_password }}
+                <span class="password-toggle" onclick="togglePassword('repeat_password')">
+                    <i class="fas fa-eye"></i>
+                </span>
+                {% if forms.repeat_password.errors %}
+                <div class="invalid-feedback">{{ forms.repeat_password.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I agree to the <a href="#" class="text-primary">Terms & Conditions</a>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn btn-register w-100" type="submit">
+                Create Account <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="mb-0">Already have an account? <a href="{% url 'accounts:login' %}" class="text-primary fw-bold">Login here</a></p>
         </div>
     </div>
 </div>
-<!-- Registration Form End -->
+
+<script>
+    function togglePassword(fieldId) {
+        const field = document.querySelector(`[name="${fieldId}"]`);
+        const icon = field.parentElement.querySelector('.password-toggle i');
+        
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    (() => {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
 
 {% endblock content %}
+</body>
+</html>

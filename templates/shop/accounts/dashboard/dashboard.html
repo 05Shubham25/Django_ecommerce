@@ -1,87 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9fa;
+            --accent-color: #4e73df;
+            --text-primary: #344767;
+            --text-secondary: #67748e;
+            --card-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        body {
+            background-color: var(--secondary-bg);
+            color: var(--text-primary);
+        }
+
+        .page-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/api/placeholder/1920/300');
+            background-position: center;
+            background-size: cover;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: var(--primary-bg);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-section {
+            padding: 2rem;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-bg);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .stats-card {
+            background: linear-gradient(45deg, var(--accent-color), #224abe);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stats-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .breadcrumb {
+            background: transparent;
+        }
+
+        .breadcrumb-item a {
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .profile-section {
+                padding: 1rem;
+            }
+            
+            .stats-card {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
 {% extends '../../../base.html' %}
 {% load static %}
 {% block title %}Dashboard{% endblock title %}
 {% block content %}
 
-<div  class="pages-title section-padding">
-    <div  class="container">
-        <div  style="background:#40394a" class="row">
-            <div class="col-xs-12">
-                <div class="pages-title-text text-center">
-                    <h2 style="color:#f4cca4">dashboard</h2>
-                    <ul class="text-left">
-                        <li><a style="color:#d99879" href="\">Home </a></li>
-                        <li style="color:#d99879"><span> // </span>Cart</li>
-                    </ul>
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 text-white fw-bold mb-4">My Dashboard</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active text-white">Dashboard</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Content -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Alerts -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            {% include "includes/dashboard_slider.html" %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <div class="row">
+                <!-- Profile Card -->
+                <div class="col-md-8 mb-4">
+                    <div class="dashboard-card">
+                        <div class="profile-section text-center">
+                            {% comment %} <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-image"> {% endcomment %}
+                            <h3 class="mb-4">{{ user.full_name | title }}</h3>
+                            
+                            <div class="info-item">
+                                <span class="fw-bold">Username</span>
+                                <span>{{ user.username }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="fw-bold">Email</span>
+                                <span>{{ user.email }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="fw-bold">Phone</span>
+                                <span>{{ user.Phone_number }}</span>
+                            </div>
+                            
+                            {% if profile.address %}
+                            <div class="info-item">
+                                <span class="fw-bold">Address</span>
+                                <span>{{ profile.address }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if profile.city %}
+                            <div class="info-item">
+                                <span class="fw-bold">City</span>
+                                <span>{{ profile.city }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if profile.state %}
+                            <div class="info-item">
+                                <span class="fw-bold">State</span>
+                                <span>{{ profile.state }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if profile.country %}
+                            <div class="info-item">
+                                <span class="fw-bold">Country</span>
+                                <span>{{ profile.country }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="stats-card h-100">
+                        <i class="fas fa-shopping-bag fa-3x mb-3"></i>
+                        <h4>Total Orders</h4>
+                        <div class="stats-number">{{ orders_count }}</div>
+                        <a href="{% url 'accounts:my_orders' %}" class="btn btn-light">View Orders</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<section style="background:#1c1427" class="section-conten padding-y bg">
-    <br><br>
-    <div class="container">
-        <div class="row">
-            <span class="font-size:18px"><b> {% include "includes/alerts.html" %} </b></span>
-            {% include "includes/dashboard_slider.html" %}
-        
-            <main style="background:#40394A; border-radius:10px" class="col-md-9">
-                <article class="card">
-                <br>
-                <header class="card-header text-center">
-                    <span style="font-size:20px" class="d-inline-block">Logged in as :</span>
-                    <strong style="font-size:20px">{{user.full_name | title}}</strong>
-                </header>
-                <hr>
-                <div class="card-body">
-                    <div  class="row">
-                        <div style="" class="col-md-6">
-                            <div  class="card" style="text-align:center; background:#1C1427;border-radius:7px;margin-bottom:10px">
-                            
-                                <div style="font-size:18px;padding:10px" class="card-body">
-                                    <img src="{{profile.profile_picture.url}}" alt="Profile Picture" width="100" style="border-radius:50px;">
-                                    <br>
-                                    <br>
-                                    <p style="font-size:16px;" class="mb-0"><span style="float:left"><b>User Name :</b></span> <span style="float:right">{{user.username}}</span></p><br><hr>
-                                    <p style="font-size:16px;" class="mb-0"><span style="float:left"><b>Email :</b></span> <span style="float:right">{{user.email}}</span></p><br><hr>
-                                    <p style="font-size:16px;" class="mb-0"><span style="float:left"><b>Phone Number :</b></span> <span style="float:right">{{user.Phone_number}}</span></p><br><hr>
-                                    
-                                    {% if profile.address %}
-                                    <p style="font-size:16px;" class="mb-0"><span style="float:left"><b>Address :</b></span> <span style="float:right">{{profile.address}}</span></p><br><hr>
-                                    {% endif %}
-                                    
-                                    {% if profile.city %}
-                                    <p style="font-size:16px;" class="mb-0"><span style="float:left"><b>City :</b></span> <span style="float:right">{{profile.city}}</span></p><br><hr>
-                                    {% endif %}
-                                    
-                                    {% if profile.state %}
-                                    <p style="font-size:16px;" class="mb-0"><span style="float:left"><b>State :</b></span> <span style="float:right">{{profile.state}}</span></p><br><hr>
-                                    {% endif %}
 
-                                    {% if profile.country %}
-                                    <p style="font-size:16px;" class="mb-0"><span style="float:left"><b>Country :</b></span> <span style="float:right">{{profile.country}}</span></p><br><hr>
-                                    {% endif %}
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div  class="col-md-6">
-                            <div  class="card" style="text-align:center;">
-                                <div style="background:#1C1427;border-radius:7px;padding:10px;height:150px" style="font-size:18px" class="card-body">
-                                    <h5 style="margin-top:30px;font-size:23px" class="card-title">Total Orders</h5>
-                                    <h4 style="font-size:25px">{{orders_count}}</h4>
-                                    
-                                </div>
-                            </div>
-                        </div><br>
-                    </div>
-                </div>
-                </article>
-            </main>
-        </div>
-    </div><br>
-</section>
-
-
-<!-- ========================= SECTION CONTENT END// ========================= -->
 {% endblock content %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

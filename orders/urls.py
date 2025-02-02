@@ -10,6 +10,8 @@ urlpatterns = [
     # path('payments/', views.payments, name='payments'),
     path('payment/verify/', views.payment_verify, name='payment_verify'),
     path('order_completed/', views.order_completed, name='order_completed'), 
+    path('cod-payment/', views.cod_payment, name='cod_payment'),
+    # path('verify-cod-otp/<str:order_number>/', views.verify_cod_otp, name='verify_cod_otp'),
      # Corrected the name of the view
     
 ]

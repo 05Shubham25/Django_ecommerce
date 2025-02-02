@@ -14,14 +14,10 @@ from cart.models import CartItem, Cart
 from cart.views import _cart_id
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import OrderForm
-from .models import Order, Payment, OrderProduct, TimingSlot
+from .models import Order, Payment, OrderProduct, TimingSlot, CODPayment
 from shop.models import Product
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
-
-
-
-
 
 
 
@@ -327,6 +323,109 @@ def payment_verify(request):
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+
+
+
+
+@login_required(login_url='accounts:login')
+def cod_payment(request, total=0, quantity=0):
+    current_user = request.user
+    cart_items = CartItem.objects.filter(user=current_user)
+    cart_count = cart_items.count()
+    if cart_count <= 0:
+        return redirect('shop:shop')
+
+    # Calculate totals
+    for cart_item in cart_items:
+        total += (cart_item.product.price * cart_item.quantity)
+        quantity += cart_item.quantity
+    tax = round(((2 * total) / 100), 2)
+    grand_total = total
+
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            try:
+                # Create order
+                order = Order()
+                order.user = current_user
+                order.first_name = form.cleaned_data['first_name']
+                order.last_name = form.cleaned_data['last_name']
+                order.phone = form.cleaned_data['phone']
+                order.email = form.cleaned_data['email']
+                order.address = form.cleaned_data['address']
+                order.order_note = form.cleaned_data['order_note']
+                order.order_total = grand_total
+                order.tax = tax
+                order.ip = request.META.get('REMOTE_ADDR')
+                order.payment_method = 'COD'
+                order.status = 'New'
+                order.is_ordered = True  # Set to True since we're completing the order immediately
+                
+                # Handle timing slot
+                timing_slot_id = request.POST.get('timing_slot')
+                if timing_slot_id:
+                    timing_slot = TimingSlot.objects.get(slot=timing_slot_id)
+                    order.timing_slot = timing_slot
+                
+                order.save()
+
+                # Generate order number
+                yr = int(datetime.date.today().strftime('%Y'))
+                dt = int(datetime.date.today().strftime('%d'))
+                mt = int(datetime.date.today().strftime('%m'))
+                d = datetime.date(yr, mt, dt)
+                current_date = d.strftime("%Y%m%d")
+                order_number = current_date + str(order.id)
+                order.order_number = order_number
+                order.save()
+
+                # Create Payment record
+                payment = Payment.objects.create(
+                    user=current_user,
+                    payment_id=f'COD_{order_number}',
+                    order_number=order_number,
+                    payment_method='COD',
+                    amount_paid=str(grand_total),
+                    payment_status='Pending'  # Keep as pending since it's COD
+                )
+                order.payment = payment
+                order.save()
+
+                # Move cart items to order products
+                for item in cart_items:
+                    order_product = OrderProduct.objects.create(
+                        order=order,
+                        payment=payment,
+                        user=current_user,
+                        product=item.product,
+                        quantity=item.quantity,
+                        product_price=item.product.price,
+                        ordered=True
+                    )
+
+                    # Add variations if any
+                    cart_item = CartItem.objects.get(id=item.id)
+                    product_variation = cart_item.variation.all()
+                    order_product.variations.set(product_variation)
+
+                    # Reduce stock
+                    product = item.product
+                    product.stock -= item.quantity
+                    product.save()
+
+                # Clear cart
+                cart_items.delete()
+
+                # Redirect to order completed page with parameters
+                param = f'?order_number={order_number}&payment_id={payment.payment_id}'
+                return redirect(f'/orders/order_completed/{param}')
+
+            except Exception as e:
+                messages.error(request, f'Error processing order: {str(e)}')
+                return redirect('orders:checkout')
+
+    return redirect('orders:checkout')
 
 
 

@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import Account
-from shop.models import Product, Variation
+from shop.models import Product, Variation 
 import random
 import string
 
