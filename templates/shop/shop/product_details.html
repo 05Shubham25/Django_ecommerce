@@ -4,33 +4,11 @@
 {% block title %}{{ single_product.name }}{% endblock %}
 
 {% block content %}
-
-<!-- Modal Search Start -->
-<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
-        <div class="modal-content rounded-0">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body d-flex align-items-center">
-                <div class="input-group w-75 mx-auto d-flex">
-                    <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                    <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal Search End -->
-
-
 <!-- Single Page Header start -->
 <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6">Shop Detail</h1>
 </div>
 <!-- Single Page Header End -->
-
 
 <!-- Single Product Start -->
 <div class="container-fluid py-5 mt-5">
@@ -38,102 +16,112 @@
         <div class="row g-4 mb-5">
             <div class="col-lg-8 col-xl-9">
                 <div class="row g-4">
+                    <!-- Product Image -->
                     <div class="col-lg-6">
-                        <div class="border rounded" style="max-width: 250px;max-height: -450px;">
+                        <div class="border rounded" style="max-width: 250px;">
                             <a href="#">
-                                <img src="{{ single_product.image.url }}" class="img-fluid rounded" style="max-width: 250px;max-height: -450px;" alt="Image">
+                                <img src="{{ single_product.image.url }}" class="img-fluid rounded" alt="{{ single_product.name }}">
                             </a>
                         </div>
                     </div>
+                    
+                    <!-- Product Details -->
                     <div class="col-lg-6">
                         <h4 class="fw-bold mb-3">{{ single_product.name }}</h4>
-                        <p class="mb-3">{{ single_product.category }}</p>
-                        <h5 class="fw-bold mb-3">{{ single_product.price }} Rs.</h5>
-                        <h5 class="fw-bold mb-3">{{ single_product.quantity }}</h5>
+                        <p class="mb-3">Category: {{ single_product.category }}</p>
+                        <h5 class="fw-bold mb-3">₹{{ single_product.price }}</h5>
+                        <h6 class="mb-3">{{ single_product.quantity }}</h6>
                         
+                        <!-- Rating Stars -->
                         <div class="d-flex mb-4">
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star"></i>
+                            {% for i in "12345" %}
+                                <i class="fa fa-star {% if forloop.counter <= single_product.averageRating %}text-secondary{% endif %}"></i>
+                            {% endfor %}
                         </div>
+
+                        <!-- Product Variations Form -->
                         <form action="{% url 'cart:add_cart' single_product.id %}" method="post">
                             {% csrf_token %}
                             
-                            {% if single_product.variation_set.cut_pieces %}
-                            <div class="mb-3">
-                                <label for="cut_pieces">How to cut:</label>
-                                <select class="form-select" id="cut_pieces" name="cut_pieces">
-                                    <option value="no" selected>No</option>
-                                    {% for x in single_product.variation_set.cut_pieces %}
-                                    <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            {% endif %}
+                            <!-- Marination Options -->
                             {% if single_product.variation_set.marination %}
                             <div class="mb-3">
-                                <label for="marination">Select Marination: (25 extra for each masala)</label>
+                                <label for="marination" class="form-label">Select Marination: <span class="text-muted">(₹25 extra)</span></label>
                                 <select class="form-select" id="marination" name="marination">
-                                    <option value="no" selected>No</option>
-                                    {% for x in single_product.variation_set.marination %}
-                                    <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
+                                    <option value="no" selected>No Marination</option>
+                                    {% for variation in single_product.variation_set.marination %}
+                                        <option value="{{ variation.variation_value|lower }}">
+                                            {{ variation.variation_value }}
+                                        </option>
                                     {% endfor %}
                                 </select>
                             </div>
                             {% endif %}
-                            {% if single_product.variation_set.cut_fillings %}
+
+                            <!-- Cut Options -->
+                            {% if single_product.variation_set.cuts %}
                             <div class="mb-3">
-                                <label for="cut_fillings">Cut for Fillings:</label>
-                                <select class="form-select" id="cut_fillings" name="cut_fillings">
-                                    <option value="no" selected>No</option>
-                                    {% for x in single_product.variation_set.cut_fillings %}
-                                    <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
+                                <label for="cut" class="form-label">How would you like it cut?</label>
+                                <select class="form-select" id="cut" name="cut">
+                                    <option value="no" selected>No Cutting Required</option>
+                                    {% for variation in single_product.variation_set.cuts %}
+                                        <option value="{{ variation.variation_value|lower }}">
+                                            {{ variation.variation_value }}
+                                        </option>
                                     {% endfor %}
                                 </select>
                             </div>
                             {% endif %}
-                            {% if single_product.variation_set.cleaned_deveined %}
+
+                            <!-- Cleaning Options -->
+                            {% if single_product.variation_set.cleaning %}
                             <div class="mb-3">
-                                <label for="cleaned_deveined">Cleaned and Deveined:</label>
-                                <select class="form-select" id="cleaned_deveined" name="cleaned_deveined">
-                                    <option value="no" selected>No</option>
-                                    {% for x in single_product.variation_set.cleaned_deveined %}
-                                    <option value="{{ x.variation_value | lower }}">{{ x.variation_value | capfirst }}</option>
+                                <label for="cleaning" class="form-label">Cleaned and Deveined?</label>
+                                <select class="form-select" id="cleaning" name="cleaning">
+                                    {% for variation in single_product.variation_set.cleaning %}
+                                        <option value="{{ variation.variation_value|lower }}">
+                                            {{ variation.variation_value }}
+                                        </option>
                                     {% endfor %}
                                 </select>
                             </div>
                             {% endif %}
-                            <!-- Add similar blocks for other variations if needed -->
+
+                            <!-- Add to Cart Button -->
                             {% if single_product.stock <= 0 %}
-                            <div style="font-size: 18px" class="alert alert-info text-center" role="alert">
-                                <b>This Product Not In Stock Now, Try Later</b>
+                            <div class="alert alert-info text-center fs-5 mt-4" role="alert">
+                                <strong>Out of Stock</strong>
+                                <p class="mb-0">This product is currently unavailable</p>
                             </div>
                             {% else %}
-                            <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</button>
+                            <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mt-3 mb-4 text-primary">
+                                <i class="fa fa-shopping-bag me-2"></i> Add to Cart
+                            </button>
                             {% endif %}
                         </form>
                     </div>
                 </div>
-                <div class="col-lg-12">
+
+                <!-- Product Description -->
+                <div class="col-lg-12 mt-5">
                     <nav>
                         <div class="nav nav-tabs mb-3">
-                            <button class="nav-link active border-white border-bottom-0" type="button" role="tab" id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about" aria-controls="nav-about" aria-selected="true">Description</button>
+                            <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
+                                id="nav-description-tab" data-bs-toggle="tab" data-bs-target="#nav-description"
+                                aria-controls="nav-description" aria-selected="true">
+                                Description
+                            </button>
                         </div>
                     </nav>
                     <div class="tab-content mb-5">
-                        <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
-                            <p>{{ single_product.description }}.</p>
+                        <div class="tab-pane active" id="nav-description" role="tabpanel">
+                            <p>{{ single_product.description }}</p>
                         </div>
                     </div>
                 </div>
-        
             </div>
         </div>
     </div>
 </div>
-</div>
 <!-- Single Product End -->
-
 {% endblock %}

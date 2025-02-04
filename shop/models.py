@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 from accounts.models import Account
 from django.db.models import Avg, Count
+from django.core.exceptions import ValidationError
+from django.contrib import admin
 
 
 class Category(models.Model):
@@ -65,63 +67,67 @@ class Product(models.Model):
         verbose_name_plural = 'Products'
         ordering = ('-date_joined_for_format',)
     
-
-
-# class VariationManager(models.Manager):
-#     def colors(self):
-#         return super(VariationManager, self).filter(variation_category='color', is_active=True)
-
-#     def sizes(self):
-#         return super(VariationManager, self).filter(variation_category='size', is_active=True)
-
-# variation_category_choices = (
-#     ('color', 'color'),
-#     ('size', 'size'),
-# )
-
-# class Variation(models.Model):
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-#     variation_category = models.CharField(max_length=100, choices=variation_category_choices)
-#     variation_value = models.CharField(max_length=100)
-#     is_active = models.BooleanField(default=True)
-#     created = models.DateTimeField(auto_now_add=True)
-#     objects = VariationManager()
-
-#     def __str__(self):
-#         return self.variation_value
-
-
-# Updated variation_category_choices with new choices
-variation_category_choices = (
-    ('marination', 'Marination'),  # New choice for marination
-    ('cut_pieces', 'Cut into Pieces'),
-    ('cut_fillings', 'Cut for Fillings'),
-    ('cleaned_deveined', 'Cleaned and Deveined'),
-)
-
-class VariationManager(models.Manager):
-    def marination(self):
-        return super(VariationManager, self).filter(variation_category='marination', is_active=True)
-
-    def cut_pieces(self):
-        return super(VariationManager, self).filter(variation_category='cut_pieces', is_active=True)
-
-    def cut_fillings(self):
-        return super(VariationManager, self).filter(variation_category='cut_fillings', is_active=True)
-
-    def cleaned_deveined(self):
-        return super(VariationManager, self).filter(variation_category='cleaned_deveined', is_active=True)
+VARIATION_VALUES = {
+    'marination': [
+        'Tandoori Masala',
+        'Red Masala',
+        'Green Masala'
+    ],
+    'cut': [
+        'Cut into Pieces',
+        'Cut for Fillings'
+    ],
+    'cleaning': [
+        'Yes',
+        'No'
+    ]
+}
 
 class Variation(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variation_category = models.CharField(max_length=100, choices=variation_category_choices)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    variation_category = models.CharField(
+        max_length=100,
+        choices=[
+            ('marination', 'Marination'),
+            ('cut', 'How to Cut'),
+            ('cleaning', 'Cleaned and Deveined')
+        ]
+    )
     variation_value = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
-    objects = VariationManager()
+
+    def save(self, *args, **kwargs):
+        # If this is a new variation (no ID yet)
+        if not self.pk and not self.variation_value:
+            super().save(*args, **kwargs)
+            # Get all predefined values for this category
+            values = VARIATION_VALUES.get(self.variation_category, [])
+            
+            # Create additional variations for all values
+            existing_variations = Variation.objects.filter(
+                product=self.product,
+                variation_category=self.variation_category
+            ).values_list('variation_value', flat=True)
+            
+            for value in values:
+                if value not in existing_variations:
+                    Variation.objects.create(
+                        product=self.product,
+                        variation_category=self.variation_category,
+                        variation_value=value,
+                        is_active=self.is_active
+                    )
+            
+            # Delete this empty variation
+            self.delete()
+        else:
+            super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.variation_value
+        return f"{self.product.name} - {self.get_variation_category_display()} - {self.variation_value}"
+
+  # You'll need to create this JS file
 
 
 class ReviewRating(models.Model):

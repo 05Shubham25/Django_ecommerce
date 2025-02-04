@@ -25,10 +25,23 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Variation)
 class VariationAdmin(admin.ModelAdmin):
-    list_display = ['product', 'variation_category', 'variation_value', 'is_active']
-    list_filter = ['product', 'variation_category', 'is_active']
-    list_editable = ['is_active']
+    list_display = ('product', 'variation_category', 'variation_value', 'is_active')
+    list_filter = ('variation_category', 'is_active', 'product')
+    list_editable = ('is_active',)
+    search_fields = ('product__name',)
+    
+    # Only show product and variation_category in the add form
+    def get_fields(self, request, obj=None):
+        if obj is None:  # This is the add form
+            return ('product', 'variation_category')
+        # This is the change form
+        return ('product', 'variation_category', 'variation_value', 'is_active')
 
+    def save_model(self, request, obj, form, change):
+        if not change:  # Only for new variations
+            obj.save()  # This will trigger our custom save method
+        else:
+            super().save_model(request, obj, form, change)
 
 admin.site.register(ReviewRating)
 

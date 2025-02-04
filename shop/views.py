@@ -61,6 +61,7 @@ def product_details(request, category_slug, product_details_slug):
         single_product = Product.objects.get(category__slug=category_slug, slug=product_details_slug)
         
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
+        
     except Exception as e:
         return e
 
