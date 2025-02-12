@@ -105,16 +105,12 @@
                                     <td class="text-center">₹{{subtotal}}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" class="text-end">Handling:</td>
-                                    <td class="text-center">₹15.0</td>
-                                </tr>
-                                <tr>
                                     <td colspan="4" class="text-end">Tax:</td>
                                     <td class="text-center">₹{{order.tax}}</td>
                                 </tr>
                                 <tr class="fw-bold">
                                     <td colspan="4" class="text-end">Grand Total:</td>
-                                    <td class="text-center">₹{{order.order_total}}</td>
+                                    <td class="text-center">₹{{ grand_total|floatformat:2 }}</td>
                                 </tr>
                             </tfoot>
                         </table>

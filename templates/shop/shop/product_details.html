@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}{{ single_product.name }}{% endblock %}
 
 {% block content %}
@@ -18,74 +17,85 @@
                 <div class="row g-4">
                     <!-- Product Image -->
                     <div class="col-lg-6">
-                        <div class="border rounded" style="max-width: 250px;">
-                            <a href="#">
-                                <img src="{{ single_product.image.url }}" class="img-fluid rounded" alt="{{ single_product.name }}">
-                            </a>
+                        <div class="border rounded" style="max-width: 250px">
+                            <img src="{{ single_product.image.url }}" class="img-fluid rounded" alt="{{ single_product.name }}" />
                         </div>
                     </div>
-                    
+
                     <!-- Product Details -->
                     <div class="col-lg-6">
                         <h4 class="fw-bold mb-3">{{ single_product.name }}</h4>
                         <p class="mb-3">Category: {{ single_product.category }}</p>
                         <h5 class="fw-bold mb-3">₹{{ single_product.price }}</h5>
                         <h6 class="mb-3">{{ single_product.quantity }}</h6>
-                        
+
                         <!-- Rating Stars -->
                         <div class="d-flex mb-4">
                             {% for i in "12345" %}
-                                <i class="fa fa-star {% if forloop.counter <= single_product.averageRating %}text-secondary{% endif %}"></i>
+                            <i class="fa fa-star {% if forloop.counter <= single_product.averageRating %}text-secondary{% endif %}"></i>
                             {% endfor %}
                         </div>
 
-                        <!-- Product Variations Form -->
-                        <form action="{% url 'cart:add_cart' single_product.id %}" method="post">
+                        <!-- Product Form -->
+                        <form id="addToCartForm" data-product-id="{{ single_product.id }}">
                             {% csrf_token %}
-                            
+
+                            <!-- Quantity Controls -->
+                            <div class="d-flex align-items-center mb-4">
+                                <label class="me-3">Quantity:</label>
+                                <div class="input-group" style="width: 130px;">
+                                    <button type="button" class="btn btn-sm btn-secondary decrease-quantity">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                    <input type="text" class="form-control text-center quantity-input" value="1" readonly>
+                                    <button type="button" class="btn btn-sm btn-secondary increase-quantity">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
                             <!-- Marination Options -->
-                            {% if single_product.variation_set.marination %}
+                            {% if marination_variations %}
                             <div class="mb-3">
                                 <label for="marination" class="form-label">Select Marination: <span class="text-muted">(₹25 extra)</span></label>
                                 <select class="form-select" id="marination" name="marination">
-                                    <option value="no" selected>No Marination</option>
-                                    {% for variation in single_product.variation_set.marination %}
-                                        <option value="{{ variation.variation_value|lower }}">
-                                            {{ variation.variation_value }}
-                                        </option>
+                                    <option value="" selected>No Marination</option>
+                                    {% for variation in marination_variations %}
+                                    <option value="{{ variation.variation_value|lower }}">{{ variation.variation_value }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             {% endif %}
 
                             <!-- Cut Options -->
-                            {% if single_product.variation_set.cuts %}
+                            {% if cut_variations %}
                             <div class="mb-3">
                                 <label for="cut" class="form-label">How would you like it cut?</label>
                                 <select class="form-select" id="cut" name="cut">
-                                    <option value="no" selected>No Cutting Required</option>
-                                    {% for variation in single_product.variation_set.cuts %}
-                                        <option value="{{ variation.variation_value|lower }}">
-                                            {{ variation.variation_value }}
-                                        </option>
+                                    <option value="" selected>No Cutting Required</option>
+                                    {% for variation in cut_variations %}
+                                    <option value="{{ variation.variation_value|lower }}">{{ variation.variation_value }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             {% endif %}
 
                             <!-- Cleaning Options -->
-                            {% if single_product.variation_set.cleaning %}
+                            {% if cleaning_variations %}
                             <div class="mb-3">
                                 <label for="cleaning" class="form-label">Cleaned and Deveined?</label>
                                 <select class="form-select" id="cleaning" name="cleaning">
-                                    {% for variation in single_product.variation_set.cleaning %}
-                                        <option value="{{ variation.variation_value|lower }}">
-                                            {{ variation.variation_value }}
-                                        </option>
+                                    {% for variation in cleaning_variations %}
+                                    <option value="{{ variation.variation_value|lower }}">{{ variation.variation_value }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             {% endif %}
+
+                            <!-- Total Price Display -->
+                            <div class="mb-3">
+                                <h5 class="fw-bold">Total: ₹<span id="totalPrice">{{ single_product.price }}</span></h5>
+                            </div>
 
                             <!-- Add to Cart Button -->
                             {% if single_product.stock <= 0 %}
@@ -94,7 +104,7 @@
                                 <p class="mb-0">This product is currently unavailable</p>
                             </div>
                             {% else %}
-                            <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mt-3 mb-4 text-primary">
+                            <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                 <i class="fa fa-shopping-bag me-2"></i> Add to Cart
                             </button>
                             {% endif %}
@@ -106,9 +116,7 @@
                 <div class="col-lg-12 mt-5">
                     <nav>
                         <div class="nav nav-tabs mb-3">
-                            <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
-                                id="nav-description-tab" data-bs-toggle="tab" data-bs-target="#nav-description"
-                                aria-controls="nav-description" aria-selected="true">
+                            <button class="nav-link active border-white border-bottom-0" type="button" role="tab">
                                 Description
                             </button>
                         </div>
@@ -124,4 +132,75 @@
     </div>
 </div>
 <!-- Single Product End -->
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('addToCartForm');
+    const quantityInput = document.querySelector('.quantity-input');
+    const decreaseBtn = document.querySelector('.decrease-quantity');
+    const increaseBtn = document.querySelector('.increase-quantity');
+    const basePrice = {{ single_product.price }};
+    const totalPriceDisplay = document.getElementById('totalPrice');
+    const marinationSelect = document.getElementById('marination');
+
+    // Update total price
+    function updateTotalPrice() {
+        let quantity = parseInt(quantityInput.value);
+        let extraCharge = marinationSelect && marinationSelect.value ? 25 : 0;
+        let total = (basePrice + extraCharge) * quantity;
+        totalPriceDisplay.textContent = total.toFixed(2);
+    }
+
+    // Quantity controls
+    decreaseBtn.addEventListener('click', function() {
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            updateTotalPrice();
+        }
+    });
+
+    increaseBtn.addEventListener('click', function() {
+        let currentValue = parseInt(quantityInput.value);
+        quantityInput.value = currentValue + 1;
+        updateTotalPrice();
+    });
+
+    // Handle marination change
+    if (marinationSelect) {
+        marinationSelect.addEventListener('change', updateTotalPrice);
+    }
+
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const productId = this.dataset.productId;
+        const formData = new FormData(this);
+        formData.append('quantity', quantityInput.value);
+
+        fetch(`/cart/add_cart/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/cart/';
+            } else {
+                alert('Failed to add item to cart. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+});
+</script>
 {% endblock %}

@@ -1,4 +1,5 @@
 # orders viws.py
+from decimal import Decimal
 import json
 import datetime
 
@@ -18,6 +19,125 @@ from .models import Order, Payment, OrderProduct, TimingSlot, CODPayment
 from shop.models import Product
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
+from django.core.mail import EmailMessage
+from django.conf import settings
+
+
+def send_order_email(order, ordered_products):
+    """
+    Send HTML email with order confirmation to admin
+    """
+    try:
+        subject = f'New Order Received - Order #{order.order_number}'
+        
+        # Calculate order details
+        subtotal = Decimal('0.00')
+        marination_tax = Decimal('0.00')
+        
+        for item in ordered_products:
+            subtotal += Decimal(str(item.product_price)) * item.quantity  # Convert product_price to Decimal
+            if item.variations.filter(variation_category='marination').exists():
+                 marination_tax += Decimal('25.00') * item.quantity  # Keep tax as Decimal
+                
+        grand_total = subtotal + marination_tax
+        
+        # Create product rows HTML
+        product_rows_html = ""
+        for item in ordered_products:
+            variations = ", ".join([f"{v.variation_category}: {v.variation_value}" 
+                                  for v in item.variations.all()])
+            
+            image_url = item.product.image.url if item.product.image else ''
+            
+            product_rows_html += f"""
+                <tr>
+                    <td>{item.product}</td>
+                    <td><img src="{image_url}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 5px;" alt="{item.product}"></td>
+                    <td>{variations if variations else 'None'}</td>
+                    <td>{item.quantity}</td>
+                    <td>₹{item.product_price}</td>
+                    <td>₹{item.product_price * item.quantity}</td>
+                </tr>
+            """
+
+        # Create the email HTML content with inline styles
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto;">
+            <div style="background-color: #4CAF50; color: white; padding: 20px; text-align: center;">
+                <h1>New Order Received!</h1>
+                <p>Order #{order.order_number}</p>
+            </div>
+            
+            <div style="padding: 20px;">
+                <div style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+                    <h2>Order Details</h2>
+                    <p><strong>Order Number:</strong> {order.order_number}</p>
+                    <p><strong>Date:</strong> {order.created_at.strftime("%B %d, %Y, %I:%M %p")}</p>
+                    <p><strong>Payment Method:</strong> {order.payment.payment_method}</p>
+                    <p><strong>Payment Status:</strong> <span style="background-color: #4CAF50; color: white; padding: 5px 10px; border-radius: 3px; font-size: 14px;">{order.payment.payment_status}</span></p>
+                </div>
+
+                <div style="background-color: #f5f5f5; border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+                    <h2>Customer Information</h2>
+                    <p><strong>Name:</strong> {order.first_name} {order.last_name}</p>
+                    <p><strong>Email:</strong> {order.email}</p>
+                    <p><strong>Phone:</strong> {order.phone}</p>
+                    <p><strong>Address:</strong> {order.address}</p>
+                </div>
+
+                <h2>Order Items</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">Product</th>
+                            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">Image</th>
+                            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">Variations</th>
+                            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">Quantity</th>
+                            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">Price</th>
+                            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {product_rows_html}
+                    </tbody>
+                </table>
+
+                <div style="background-color: #f5f5f5; border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                    <h2>Order Summary</h2>
+                    <p><strong>Subtotal:</strong> ₹{subtotal}</p>
+                    <p><strong>Marination Tax:</strong> ₹{marination_tax}</p>
+                    <p><strong>Grand Total:</strong> ₹{grand_total:.2f}</p>
+                    <p><strong>Delivery Time Slot:</strong> {order.timing_slot if order.timing_slot else 'Not specified'}</p>
+                    <p><strong>Order Notes:</strong> {order.order_note if order.order_note else 'None'}</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; padding: 20px; background-color: #f5f5f5; margin-top: 20px;">
+                <p>This is an automated email notification for order #{order.order_number}</p>
+            </div>
+        </body>
+        </html>
+        """
+
+        # Create and send email
+        email = EmailMessage(
+            subject,
+            html_content,
+            settings.DEFAULT_FROM_EMAIL,
+            [settings.EMAIL_HOST_USER],
+        )
+        email.content_subtype = "html"
+        email.send(fail_silently=False)
+        
+    except Exception as e:
+        print(f"Failed to send admin email notification: {str(e)}")
+        # Re-raise with more context
+        raise Exception(f"Email processing error: {str(e)}")
 
 
 
@@ -28,8 +148,8 @@ def payment_method(request):
 
 @login_required(login_url = 'accounts:login')
 def checkout(request,total=0, total_price=0, quantity=0, cart_items=None):
-    tax = 0.00
-    handing = 0.00
+    tax = Decimal('0.00')
+    marination_tax = Decimal('0.00')
     try:
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user, is_active=True)
@@ -39,6 +159,10 @@ def checkout(request,total=0, total_price=0, quantity=0, cart_items=None):
         for cart_item in cart_items:
             total_price += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
+            marination_variations = cart_item.variation.filter(variation_category='marination')
+            if marination_variations.exists():
+                marination_tax += Decimal('25.00') * cart_item.quantity
+
         total = total_price + 10
 
     except ObjectDoesNotExist:
@@ -46,7 +170,7 @@ def checkout(request,total=0, total_price=0, quantity=0, cart_items=None):
 
     
     tax = round(((2 * total_price)/100), 2)
-    grand_total = total_price #+ tax
+    grand_total = total_price + marination_tax
     # handing = 15.00
     total = float(grand_total) #+ handing
     
@@ -54,7 +178,7 @@ def checkout(request,total=0, total_price=0, quantity=0, cart_items=None):
         'total_price': total_price,
         'quantity': quantity,
         'cart_items':cart_items,
-        'handing': handing,
+        'marination_tax': marination_tax,
         'vat' : tax,
         'order_total': total,
     }
@@ -68,21 +192,25 @@ from .models import Payment
 @login_required(login_url='accounts:login')
 def payment(request, total=0, quantity=0):
     current_user = request.user
-    handing = 15.0
+
     # if the cart count less than 0, redirect to shop page
     cart_items = CartItem.objects.filter(user=current_user)
     cart_count = cart_items.count()
     if cart_count <= 0:
         return redirect('shop:shop')
 
-    grand_total = 0
-    tax = 0
+    grand_total = Decimal('0.00')
+    tax = Decimal('0.00')
+    marination_tax = Decimal('0.00')
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
+        marination_variations = cart_item.variation.filter(variation_category='marination')
+        if marination_variations.exists():
+            marination_tax += Decimal('25.00') * cart_item.quantity
     tax = round(((2 * total) / 100), 2)
 
-    grand_total = total #+ tax
+    grand_total = total + marination_tax #+ tax
     # handing = 15.00
     total = float(grand_total) #+ handing
 
@@ -162,8 +290,6 @@ def payment(request, total=0, quantity=0):
 
 
 
-
-
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
 @login_required(login_url='accounts:login')
@@ -178,8 +304,9 @@ def payment(request, total=0, quantity=0):
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
-    tax = round(((2 * total) / 100), 2)
-    grand_total = total
+        if cart_item.variation.filter(variation_category='marination').exists():
+            marination_tax += Decimal('25.00') * cart_item.quantity 
+    grand_total = total + marination_tax
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -194,7 +321,6 @@ def payment(request, total=0, quantity=0):
             order.address = form.cleaned_data['address']
             order.order_note = form.cleaned_data['order_note']
             order.order_total = grand_total
-            order.tax = tax
             order.ip = request.META.get('REMOTE_ADDR')
             
             # Handle timing slot
@@ -230,7 +356,6 @@ def payment(request, total=0, quantity=0):
                 'order': order,
                 'cart_items': cart_items,
                 'total': total,
-                'tax': tax,
                 'grand_total': grand_total,
                 'razorpay_order_id': razorpay_order['id'],
                 'razorpay_merchant_key': settings.RAZORPAY_KEY_ID,
@@ -240,6 +365,8 @@ def payment(request, total=0, quantity=0):
             return render(request, 'shop/orders/checkout/payment.html', context)
     
     return redirect('orders:checkout')
+
+
 
 @login_required(login_url='accounts:login')
 def payment_verify(request):
@@ -310,6 +437,10 @@ def payment_verify(request):
             # Clear cart
             CartItem.objects.filter(user=request.user).delete()
 
+            # Send email notification to admin
+            ordered_products = OrderProduct.objects.filter(order_id=order.id)
+            send_order_email(order, ordered_products)
+
             # Return success response
             response_data = {
                 'order_number': order.order_number,
@@ -322,7 +453,6 @@ def payment_verify(request):
             return JsonResponse({'error': str(e)}, status=400)
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
-
 
 
 
@@ -360,7 +490,7 @@ def cod_payment(request, total=0, quantity=0):
                 order.ip = request.META.get('REMOTE_ADDR')
                 order.payment_method = 'COD'
                 order.status = 'New'
-                order.is_ordered = True  # Set to True since we're completing the order immediately
+                order.is_ordered = True
                 
                 # Handle timing slot
                 timing_slot_id = request.POST.get('timing_slot')
@@ -387,7 +517,7 @@ def cod_payment(request, total=0, quantity=0):
                     order_number=order_number,
                     payment_method='COD',
                     amount_paid=str(grand_total),
-                    payment_status='Pending'  # Keep as pending since it's COD
+                    payment_status='Pending'
                 )
                 order.payment = payment
                 order.save()
@@ -404,7 +534,7 @@ def cod_payment(request, total=0, quantity=0):
                         ordered=True
                     )
 
-                    # Add variations if any
+                    # Add variations
                     cart_item = CartItem.objects.get(id=item.id)
                     product_variation = cart_item.variation.all()
                     order_product.variations.set(product_variation)
@@ -417,7 +547,11 @@ def cod_payment(request, total=0, quantity=0):
                 # Clear cart
                 cart_items.delete()
 
-                # Redirect to order completed page with parameters
+                # Send email notification to admin
+                ordered_products = OrderProduct.objects.filter(order_id=order.id)
+                send_order_email(order, ordered_products)
+
+                # Redirect to order completed page
                 param = f'?order_number={order_number}&payment_id={payment.payment_id}'
                 return redirect(f'/orders/order_completed/{param}')
 
@@ -429,6 +563,7 @@ def cod_payment(request, total=0, quantity=0):
 
 
 
+
 def order_completed(request):
     order_number = request.GET.get('order_number')
     transID = request.GET.get('payment_id')
@@ -437,10 +572,31 @@ def order_completed(request):
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_products = OrderProduct.objects.filter(order_id=order.id)
 
-        subtotall = 0
-        for i in ordered_products:
-            subtotall += i.product_price * i.quantity
-        subtotal = round(subtotall, 2)
+        # Calculate subtotal
+        subtotal = Decimal('0.00')
+        marination_tax = Decimal('0.00')
+        
+        for item in ordered_products:
+            # Convert product_price and quantity to Decimal
+            price = Decimal(str(item.product_price))
+            quantity = Decimal(str(item.quantity))
+            subtotal += price * quantity
+            print(subtotal)
+
+
+            
+            # Check for marination variations
+            if item.variations.filter(variation_category='marination').exists():
+                marination_tax += Decimal('25.00') * quantity
+                print(marination_tax)
+
+        # Calculate tax
+        # tax = round((Decimal('0.02') * subtotal), 2)
+        
+        # Calculate grand total
+        grand_total = subtotal + marination_tax
+        print(grand_total)
+
         payment = Payment.objects.get(payment_id=transID)
 
         context = {
@@ -450,6 +606,8 @@ def order_completed(request):
             'transID': payment.payment_id,
             'payment': payment,
             'subtotal': subtotal,
+            'marination_tax': marination_tax,
+            'grand_total': grand_total,
         }
         return render(request, 'shop/orders/order_completed/order_completed.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):

@@ -157,6 +157,7 @@ EMAIL_PORT= 587
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_USER = 'contentwriter715@gmail.com'
 EMAIL_HOST_PASSWORD = 'ljnhwajkxmvtydcx'
+DEFAULT_FROM_EMAIL = 'E-shop <contentwriter715@gmail.com>'
 
 
 # AWS_QUERYSTRING_AUTH = False

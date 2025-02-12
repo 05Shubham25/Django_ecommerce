@@ -29,8 +29,12 @@
 
         <!-- Template Stylesheet -->
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+
+        
     </head>
     <body>
+
+        
 
         <!-- Spinner Start -->
         <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
@@ -203,6 +207,7 @@
     <script src="{% static 'assets/lib/waypoints/waypoints.min.js' %}"></script>
     <script src="{% static 'assets/lib/lightbox/js/lightbox.min.js' %}"></script>
     <script src="{% static 'assets/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    {% block extra_scripts %}{% endblock extra_scripts %}
 
     <!-- Template Javascript -->
     <script src="{% static 'assets/js/main.js' %}"></script>

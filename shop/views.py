@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
-from .models import Product, Category,image_slider
+from .models import Product, Category,image_slider, Variation
 from cart.views import _cart_id
 from cart.models import CartItem
 from .models import ReviewRating
@@ -56,34 +56,80 @@ def shop(request, category_slug=None):
     return render(request, 'shop/shop/shop.html', context)
 
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import Http404
+from django.contrib import messages
+
 def product_details(request, category_slug, product_details_slug):
     try:
-        single_product = Product.objects.get(category__slug=category_slug, slug=product_details_slug)
+        # Get the product or raise 404
+        single_product = get_object_or_404(
+            Product, 
+            category__slug=category_slug, 
+            slug=product_details_slug
+        )
         
-        in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
+        # Check if product is in cart
+        in_cart = CartItem.objects.filter(
+            cart__cart_id=_cart_id(request), 
+            product=single_product
+        ).exists()
         
-    except Exception as e:
-        return e
-
-    if request.user.is_authenticated:
-        try:
-            orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
-        except OrderProduct.DoesNotExist:
+        # Get variations by category
+        marination_variations = Variation.objects.filter(
+            product=single_product,
+            variation_category='marination',
+            is_active=True
+        )
+        cut_variations = Variation.objects.filter(
+            product=single_product,
+            variation_category='cut',
+            is_active=True
+        )
+        cleaning_variations = Variation.objects.filter(
+            product=single_product,
+            variation_category='cleaning',
+            is_active=True
+        )
+        
+        # Check for order product if user is authenticated
+        if request.user.is_authenticated:
+            orderproduct = OrderProduct.objects.filter(
+                user=request.user, 
+                product_id=single_product.id
+            ).exists()
+        else:
             orderproduct = None
-    else:
-        orderproduct = None
 
-    reviews = ReviewRating.objects.order_by('-updated_at').filter(product_id=single_product.id, status=True)
-    product_gallery = ProductGallery.objects.filter(product_id=single_product.id)
+        # Get reviews and product gallery
+        reviews = ReviewRating.objects.filter(
+            product_id=single_product.id, 
+            status=True
+        ).order_by('-updated_at')
+        
+        product_gallery = ProductGallery.objects.filter(
+            product_id=single_product.id
+        )
 
-    context = {
-        'single_product': single_product,
-        'in_cart': in_cart,
-        'orderproduct':orderproduct,
-        'reviews': reviews,
-        'product_gallery':product_gallery,
-    }
-    return render(request, 'shop/shop/product_details.html', context)
+        context = {
+            'single_product': single_product,
+            'in_cart': in_cart,
+            'orderproduct': orderproduct,
+            'reviews': reviews,
+            'product_gallery': product_gallery,
+            'marination_variations': marination_variations,
+            'cut_variations': cut_variations,
+            'cleaning_variations': cleaning_variations,
+        }
+        
+        return render(request, 'shop/shop/product_details.html', context)
+            
+    except Http404:
+        messages.error(request, 'Product not found.')
+        return redirect('shop:shop')
+    except Exception as e:
+        messages.error(request, f'An error occurred while loading the product: {str(e)}')
+        return redirect('shop:shop')
 
 
 def search(request):
