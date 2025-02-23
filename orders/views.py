@@ -288,8 +288,6 @@ def payment(request, total=0, quantity=0):
 
 
 
-
-
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
 @login_required(login_url='accounts:login')
@@ -300,12 +298,20 @@ def payment(request, total=0, quantity=0):
     if cart_count <= 0:
         return redirect('shop:shop')
 
+    # Initialize all totals
+    total = Decimal('0.00')
+    quantity = 0
+    marination_tax = Decimal('0.00')
+
     # Calculate totals
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
         if cart_item.variation.filter(variation_category='marination').exists():
             marination_tax += Decimal('25.00') * cart_item.quantity 
+
+    # Calculate tax (2% of total)
+    tax = round((Decimal('0.02') * total), 2)
     grand_total = total + marination_tax
 
     if request.method == 'POST':
@@ -321,6 +327,7 @@ def payment(request, total=0, quantity=0):
             order.address = form.cleaned_data['address']
             order.order_note = form.cleaned_data['order_note']
             order.order_total = grand_total
+            order.tax = tax  # Set the tax field
             order.ip = request.META.get('REMOTE_ADDR')
             
             # Handle timing slot
@@ -356,6 +363,8 @@ def payment(request, total=0, quantity=0):
                 'order': order,
                 'cart_items': cart_items,
                 'total': total,
+                'tax': tax,
+                'marination_tax': marination_tax,
                 'grand_total': grand_total,
                 'razorpay_order_id': razorpay_order['id'],
                 'razorpay_merchant_key': settings.RAZORPAY_KEY_ID,
@@ -581,21 +590,18 @@ def order_completed(request):
             price = Decimal(str(item.product_price))
             quantity = Decimal(str(item.quantity))
             subtotal += price * quantity
-            print(subtotal)
 
 
             
             # Check for marination variations
             if item.variations.filter(variation_category='marination').exists():
                 marination_tax += Decimal('25.00') * quantity
-                print(marination_tax)
 
         # Calculate tax
         # tax = round((Decimal('0.02') * subtotal), 2)
         
         # Calculate grand total
         grand_total = subtotal + marination_tax
-        print(grand_total)
 
         payment = Payment.objects.get(payment_id=transID)
 
