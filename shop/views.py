@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
-from .models import Product, Category,image_slider, Variation
+from .models import Product, Category, image_slider, Variation, product_of_the_day
 from cart.views import _cart_id
 from cart.models import CartItem
 from .models import ReviewRating
@@ -14,11 +14,12 @@ from .models import ProductGallery
 
 def home(request):
     products = Product.objects.all().filter(is_available=True)
-    
+    featured_products = product_of_the_day.objects.filter(is_featured=True)[:2]  # Limit to 2 products
     
     context = {
-        'products' : products,
-        'image_slider':image_slider.objects.all(),
+        'products': products,
+        'image_slider': image_slider.objects.all(),
+        'featured_products': featured_products,
     }
     return render(request, 'shop/index.html', context)
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Variation, ReviewRating, ProductGallery, image_slider
+from .models import Category, Product, Variation, ReviewRating, ProductGallery, image_slider, product_of_the_day
 import admin_thumbnails
 
 @admin_thumbnails.thumbnail('image')
@@ -52,3 +52,9 @@ class ProductGalleryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(image_slider)
+
+@admin.register(product_of_the_day)
+class product_of_the_dayAdmin(admin.ModelAdmin):
+    list_display = ('product', 'is_featured')
+    list_filter = ('is_featured',)
+    search_fields = ('product__name',)

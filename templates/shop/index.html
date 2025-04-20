@@ -78,22 +78,44 @@
 
 
 
-<!-- About Me Section Start -->
-<div class="container-fluid py-5">
+<!--Seasonal Section Start -->
+<div class="container-fluid py-4">
     <div class="container">
-        <div class="mb-4">
-            <h1 class="display-5 mb-4 text-primary">SEASONAL CATCH OF THE DAY</h1>
-        </div>
-        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-            <div class="row g-0">
-                {% for product in product_of_the_day %}
-                {% endfor %}
-
+        <div class="card border">
+            <div class="card-header bg-white border-bottom-0">
+                <h5 class="text-primary mb-0">SEASONAL CATCH OF THE DAY</h5>
+            </div>
+            <div class="card-body p-0">
+                {% if featured_products %}
+                <div class="row row-cols-1 row-cols-md-3 g-0">
+                    {% for featured in featured_products %}
+                    <div class="col">
+                        <div class="p-3 {% if not forloop.last %}border-bottom {% endif %}{% if forloop.counter|divisibleby:3 and not forloop.last %}border-md-bottom-0{% endif %} {% if forloop.counter|add:1|divisibleby:3 or forloop.counter|add:2|divisibleby:3 %}border-md-end{% endif %}">
+                            <a href="{% url 'shop:product_details' featured.product.category.slug featured.product.slug %}" class="text-decoration-none">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <img src="{{ featured.product.image.url }}" alt="{{ featured.product.name }}" style="width: 100px; height: 100px; object-fit: cover;" class="rounded">
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="text-dark mb-1">{{ featured.product.name }}</h6>
+                                        <p class="text-primary mb-0">₹{{ featured.product.price }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-3">
+                    <p class="mb-0">No featured products selected for today</p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-<!-- About Me Section End -->
+<!-- Seasonal Section End -->
 
 
 
