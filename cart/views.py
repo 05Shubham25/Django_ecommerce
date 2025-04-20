@@ -334,7 +334,8 @@ def cart(request, total_price=0, quantity=0, cart_items=None):
         quantity = sum(item.quantity for item in cart_items)
     
     except ObjectDoesNotExist:
-        pass
+        # Initialize cart_items as an empty list if no cart exists
+        cart_items = []
     
     tax = round(((2 * total_price)/100), 2)
     grand_total = total_price

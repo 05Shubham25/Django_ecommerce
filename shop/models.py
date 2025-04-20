@@ -167,3 +167,13 @@ class ProductGallery(models.Model):
 
 class image_slider(models.Model):
     image = models.ImageField(upload_to='static/img/slider')
+
+
+
+
+class product_of_the_day(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    # image = models.ImageField(upload_to='product_of_the_day')
+
+    def __str__(self):
+        return self.product.name

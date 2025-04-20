@@ -45,12 +45,12 @@
 
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
-            
+            <!--
             <div class="container topbar bg-primary d-none d-lg-block">
                 <div class="d-flex justify-content-between">
 
                     <div class="top-info ps-2">
-                        <!-- <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small> -->
+                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small> 
                         {% if user.id is None %}
                         <div class="left floatleft">
                             <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">WELCOME GUEST</a></small>
@@ -70,13 +70,13 @@
                         </p>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="container px-0">
                 <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <div>
-                    <img style="width: 100px;margin-left: 190px;margin-bottom: -100px;" src="static\assets\img\logo2.png" alt="">
-                    <a href="\" class="navbar-brand"><h1 style="font-family: cursive; font-weight:var(170px)" class="text-primary display-6">THE KOLINBAI</h1></a> 
-                    </div>
+                    <a href="\" class="navbar-brand d-flex align-items-center">
+                        <img style="width: 80px;" src="{% static 'assets/img/logo2.png' %}" alt="Logo" class="me-2">
+                        <h1 style="font-family: cursive;" class="text-primary m-0">THE KOLINBAI</h1>
+                    </a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -110,11 +110,9 @@
                             </div>
                         </div>
                         <div class="d-flex m-3 me-0">
-                            
-                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
                             <a href="{% url 'cart:cart' %}" class="position-relative me-4 my-auto">
                                 <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
+                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">{{ cart_count }}</span>
                             </a>
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">

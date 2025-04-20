@@ -81,7 +81,7 @@ def counter(request):
             
 
     return {
-        'cart_count' : cart_count,
+        'cart_count' : quantity,
         'cart_itemsss' : cart_itemsss,
         'totalll': total_price,
         'quantityyy' : quantity,
