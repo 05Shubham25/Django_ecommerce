@@ -14,7 +14,29 @@ from .models import ProductGallery
 
 def home(request):
     products = Product.objects.all().filter(is_available=True)
-    featured_products = product_of_the_day.objects.filter(is_featured=True)[:2]  # Limit to 2 products
+    
+    # First try to get featured products
+    featured_products = product_of_the_day.objects.filter(is_featured=True)
+    
+    # If no featured products are found, get the latest products instead
+    if not featured_products.exists():
+        # Get latest available products
+        latest_products = Product.objects.filter(is_available=True).order_by('-date_joined_for_format')[:6]
+        
+        # Create temporary product_of_the_day objects for display
+        temp_featured = []
+        for product in latest_products:
+            # Create a simple object with the same structure as product_of_the_day
+            temp_featured.append(type('obj', (object,), {
+                'product': product,
+                'is_featured': True
+            }))
+        featured_products = temp_featured
+    
+    # Debug print to check if we have products
+    print(f"Featured products count: {len(featured_products)}")
+    for item in featured_products:
+        print(f"Product: {item.product.name}, Price: {item.product.price}")
     
     context = {
         'products': products,

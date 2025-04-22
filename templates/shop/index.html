@@ -79,33 +79,40 @@
 
 
 <!--Seasonal Section Start -->
-<div class="container-fluid py-4">
+<div class="container-fluid py-5">
     <div class="container">
-        <div class="card border">
-            <div class="card-header bg-white border-bottom-0">
-                <h5 class="text-primary mb-0">SEASONAL CATCH OF THE DAY</h5>
-            </div>
-            <div class="card-body p-0">
-                {% if featured_products %}
-                <div class="row row-cols-1 row-cols-md-3 g-0">
-                    {% for featured in featured_products %}
-                    <div class="col">
-                        <div class="p-3 {% if not forloop.last %}border-bottom {% endif %}{% if forloop.counter|divisibleby:3 and not forloop.last %}border-md-bottom-0{% endif %} {% if forloop.counter|add:1|divisibleby:3 or forloop.counter|add:2|divisibleby:3 %}border-md-end{% endif %}">
-                            <a href="{% url 'shop:product_details' featured.product.category.slug featured.product.slug %}" class="text-decoration-none">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <img src="{{ featured.product.image.url }}" alt="{{ featured.product.name }}" style="width: 100px; height: 100px; object-fit: cover;" class="rounded">
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="text-dark mb-1">{{ featured.product.name }}</h6>
-                                        <p class="text-primary mb-0">₹{{ featured.product.price }}</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
+        <div class="mb-4">
+            <h1 class="display-5 mb-4 text-primary">Seasonal Catch of the Day</h1>
+        </div>
+        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+            {% if featured_products %}
+            <link rel="stylesheet" href="{% static 'assets/css/carousel.css' %}">
+            
+                
+                <section class="container-fluid px-0">
+                  <div id="cCarousel">
+                    <div class="arrow" id="prev"><i class="fas fa-chevron-left"></i></div>
+                    <div class="arrow" id="next"><i class="fas fa-chevron-right"></i></div>
+
+                    <div id="carousel-vp">
+                      <div id="cCarousel-inner">
+                        {% for featured in featured_products %}
+                        <article class="cCarousel-item">
+                          <img src="{{ featured.product.image.url }}" alt="{{ featured.product.name }}">
+                          <div class="border border-secondary border-top-0 rounded-bottom">
+                            <div class="infos">
+                              <h3>{{ featured.product.name }}</h3>
+                              <a href="{% url 'shop:product_details' featured.product.category.slug featured.product.slug %}" class="btn border border-secondary rounded-pill px-3 text-primary">₹{{ featured.product.price }}</a>
+                            </div>
+                          </div>
+                        </article>
+                        {% endfor %}
+                      </div>
                     </div>
-                    {% endfor %}
-                </div>
+                  </div>
+                </section>
+                
+                <script src="{% static 'assets/js/carousel.js' %}"></script>
                 {% else %}
                 <div class="text-center py-3">
                     <p class="mb-0">No featured products selected for today</p>
@@ -163,7 +170,7 @@
                                                 incididunt</p> -->
                                             <div class="d-flex justify-content-between flex-lg-wrap">
                                                 <p class="text-dark fs-5 fw-bold mb-0">₹{{product.price}}</p>
-                                                <a href="#"
+                                                <a href="{% url 'shop:product_details' product.category.slug product.slug %}"
                                                     class="btn border border-secondary rounded-pill px-3 text-primary"><i
                                                         class="fa fa-shopping-bag me-2 text-primary"></i> Add to
                                                     cart</a>

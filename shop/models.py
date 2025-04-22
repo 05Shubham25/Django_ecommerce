@@ -174,7 +174,8 @@ class image_slider(models.Model):
 class product_of_the_day(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     is_featured = models.BooleanField(default=False)
-    # image = models.ImageField(upload_to='product_of_the_day')
-
+    
     def __str__(self):
         return self.product.name
+
+    
