@@ -133,7 +133,7 @@ MESSAGE_TAGS = {
 # Password reset
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 
-<<<<<<< HEAD
+
 # Email settings - Use console backend for local development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # For production, uncomment the lines below and comment the line above
@@ -144,7 +144,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 # EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'E-shop <noreply@thekolinbai.in>'
-=======
+
 # Email settings - Use environment variables
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -153,7 +153,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = f'E-shop <{EMAIL_HOST_USER}>'
->>>>>>> edb33d65febe47558740885159594885bd8cd133
 
 # AWS settings - Use environment variables
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default='')
@@ -166,8 +165,4 @@ AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
 RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET')
 
-<<<<<<< HEAD
-# No logging configuration - saves disk space
-=======
-# No logging configuration - saves disk space
->>>>>>> edb33d65febe47558740885159594885bd8cd133
+
