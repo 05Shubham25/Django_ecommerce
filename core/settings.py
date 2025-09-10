@@ -8,10 +8,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='your-secret-key-here')
 
 # Development settings for local system
+# For production, change DEBUG=False and update ALLOWED_HOSTS, CSRF_TRUSTED_ORIGINS
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0').split(',')
 
 # Security settings for local development (disabled for easier development)
+# For production, enable all security settings below
 SECURE_SSL_REDIRECT = False
 SECURE_PROXY_SSL_HEADER = None
 SESSION_COOKIE_SECURE = False
@@ -24,6 +26,7 @@ SECURE_HSTS_PRELOAD = False
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # CSRF settings for local development
+# For production: CSRF_TRUSTED_ORIGINS = ['https://thekolinbai.in', 'https://www.thekolinbai.in']
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
 INSTALLED_APPS = [
@@ -130,6 +133,7 @@ MESSAGE_TAGS = {
 # Password reset
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 
+<<<<<<< HEAD
 # Email settings - Use console backend for local development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # For production, uncomment the lines below and comment the line above
@@ -140,6 +144,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 # EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'E-shop <noreply@thekolinbai.in>'
+=======
+# Email settings - Use environment variables
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = f'E-shop <{EMAIL_HOST_USER}>'
+>>>>>>> edb33d65febe47558740885159594885bd8cd133
 
 # AWS settings - Use environment variables
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default='')
@@ -152,4 +166,8 @@ AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
 RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET')
 
+<<<<<<< HEAD
 # No logging configuration - saves disk space
+=======
+# No logging configuration - saves disk space
+>>>>>>> edb33d65febe47558740885159594885bd8cd133
