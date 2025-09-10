@@ -1,0 +1,338 @@
+{% extends '../../base.html' %}
+{% load static %}
+{% block title %}Cart{% endblock title %}
+
+{% block content %}
+<!-- Modal Search Start -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modal content remains the same -->
+</div>
+
+{% if not cart_items or cart_items|length == 0 %}
+<div class="container py-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-11 col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fa fa-shopping-bag fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="mb-3">Your Cart Is Empty</h3>
+                    <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
+                    <a href="{% url 'shop:shop' %}" class="btn btn-primary px-4 py-2">
+                        <i class="fa fa-shopping-cart me-2"></i> Go Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Cart</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Cart</li>
+    </ol>
+</div>
+
+<!-- Cart Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <!-- Desktop version (visible on md and larger screens) -->
+        <div class="table-responsive d-none d-md-block">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" width="15%">Products</th>
+                        <th scope="col" width="20%">Name</th>
+                        <th scope="col" width="15%">Variation</th>
+                        <th scope="col" width="10%">Price</th>
+                        <th scope="col" width="15%">Quantity</th>
+                        <th scope="col" width="15%">Total</th>
+                        <th scope="col" width="10%">Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cart_item in cart_items %}
+                    <tr id="cart-row-desktop-{{cart_item.id}}" data-product-id="{{cart_item.product.id}}" data-item-id="{{cart_item.id}}">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <a href="{{cart_item.product.get_prodcut_details_url}}">
+                                    <img src="{{cart_item.product.image.url}}" class="img-fluid rounded-circle" style="width: 70px; height: 70px;" alt="">
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <p class="mb-0">{{cart_item.product.name}}</p>
+                        </td>
+                        <td>
+                            {% for item in cart_item.variation.all %}
+                            <p class="mb-1 small">{{item.variation_category | capfirst}}: {{item.variation_value | capfirst}}</p>
+                            {% endfor %} 
+                        </td>
+                        <td>
+                            <p class="mb-0">₹{{cart_item.product.price}}</p>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-sm btn-secondary decrease-qty" data-item-id="{{cart_item.id}}" data-product-id="{{cart_item.product.id}}">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <input type="text" class="form-control mx-2 text-center quantity-input" value="{{cart_item.quantity}}" style="width: 50px" readonly>
+                                <button class="btn btn-sm btn-secondary increase-qty" data-item-id="{{cart_item.id}}" data-product-id="{{cart_item.product.id}}">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            <p class="mb-0" id="subtotal-desktop-{{cart_item.id}}">₹{{ cart_item.sub_total }}</p>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm rounded-circle bg-light border remove-btn" data-product-id="{{cart_item.product.id}}" data-item-id="{{cart_item.id}}">
+                                <i class="fa fa-times text-danger"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Mobile version (visible only on small screens) -->
+        <div class="d-md-none">
+            {% for cart_item in cart_items %}
+            <div id="cart-row-mobile-{{cart_item.id}}" class="card mb-3 shadow-sm" data-product-id="{{cart_item.product.id}}" data-item-id="{{cart_item.id}}">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4">
+                            <a href="{{cart_item.product.get_prodcut_details_url}}">
+                                <img src="{{cart_item.product.image.url}}" class="img-fluid rounded-circle" style="width: 80px; height: 80px;" alt="">
+                            </a>
+                        </div>
+                        <div class="col-8">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="card-title">{{cart_item.product.name}}</h6>
+                                <button class="btn btn-sm rounded-circle bg-light border remove-btn" data-product-id="{{cart_item.product.id}}" data-item-id="{{cart_item.id}}">
+                                    <i class="fa fa-times text-danger"></i>
+                                </button>
+                            </div>
+                            {% for item in cart_item.variation.all %}
+                            <p class="mb-1 small">{{item.variation_category | capfirst}}: {{item.variation_value | capfirst}}</p>
+                            {% endfor %}
+                            <p class="mb-2">Price: ₹{{cart_item.product.price}}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-sm btn-secondary decrease-qty" data-item-id="{{cart_item.id}}" data-product-id="{{cart_item.product.id}}">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                    <input type="text" class="form-control mx-1 text-center quantity-input" value="{{cart_item.quantity}}" style="width: 40px" readonly>
+                                    <button class="btn btn-sm btn-secondary increase-qty" data-item-id="{{cart_item.id}}" data-product-id="{{cart_item.product.id}}">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                                <p class="mb-0 fw-bold" id="subtotal-mobile-{{cart_item.id}}">₹{{ cart_item.sub_total }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row g-4 justify-content-end">
+            <div class="col-8"></div>
+            <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+                <div class="bg-light rounded">
+                    <div class="p-4">
+                        <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
+                        <div class="d-flex justify-content-between mb-4">
+                            <h5 class="mb-0 me-4">Subtotal:</h5>
+                            <p class="mb-0" id="cart-subtotal">₹{{total}}</p>
+                        </div>
+                    </div>
+                    <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
+                        <h5 class="mb-0 ps-4 me-4">Total</h5>
+                        <p class="mb-0 pe-4" id="cart-total">₹{{order_total}}</p>
+                    </div>
+                    <div class="px-4 mb-4 d-flex justify-content-between">
+                        <a href="{% url 'orders:checkout' %}" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase">Proceed Checkout</a>
+                        <a href="{% url 'shop:shop' %}" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock content %}
+
+
+{% block extra_scripts %}
+<script>
+(function() {
+    // Utility function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Function to update cart item quantity
+    function updateCartQuantity(productId, itemId, newQuantity) {
+        const csrftoken = getCookie('csrftoken');
+        const formData = new FormData();
+        formData.append('quantity', newQuantity);
+
+        fetch(`/cart/update_quantity/${productId}/${itemId}/`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update quantity input
+                const desktopRow = document.getElementById(`cart-row-desktop-${itemId}`);
+                const mobileRow = document.getElementById(`cart-row-mobile-${itemId}`);
+                
+                if (desktopRow) {
+                    desktopRow.querySelector('.quantity-input').value = newQuantity;
+                    const subtotalElement = document.getElementById(`subtotal-desktop-${itemId}`);
+                    if (subtotalElement) {
+                        subtotalElement.textContent = '₹' + data.item_subtotal;
+                    }
+                }
+                
+                if (mobileRow) {
+                    mobileRow.querySelector('.quantity-input').value = newQuantity;
+                    const subtotalElement = document.getElementById(`subtotal-mobile-${itemId}`);
+                    if (subtotalElement) {
+                        subtotalElement.textContent = '₹' + data.item_subtotal;
+                    }
+                }
+
+                // Update cart totals
+                const subtotalDisplay = document.getElementById('cart-subtotal');
+                const totalDisplay = document.getElementById('cart-total');
+                if (subtotalDisplay) subtotalDisplay.textContent = '₹' + data.cart_total;
+                if (totalDisplay) totalDisplay.textContent = '₹' + data.grand_total;
+            } else {
+                alert(data.message || 'Failed to update quantity');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update quantity. Please try again.');
+        });
+    }
+
+    // Function to remove cart item
+    function handleRemoveItem(productId, itemId) {
+        if (!confirm('Are you sure you want to remove this item?')) {
+            return;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+        fetch(`/cart/remove_cart_item/${productId}/${itemId}/`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrftoken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove both desktop and mobile versions of the row
+                const desktopRow = document.getElementById(`cart-row-desktop-${itemId}`);
+                const mobileRow = document.getElementById(`cart-row-mobile-${itemId}`);
+                
+                if (desktopRow) desktopRow.remove();
+                if (mobileRow) mobileRow.remove();
+
+                // Update totals
+                const subtotalDisplay = document.getElementById('cart-subtotal');
+                const totalDisplay = document.getElementById('cart-total');
+                if (subtotalDisplay) subtotalDisplay.textContent = '₹' + data.total;
+                if (totalDisplay) totalDisplay.textContent = '₹' + data.order_total;
+
+                checkEmptyCart();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to remove item. Please try again.');
+        });
+    }
+
+    // Function to check if cart is empty
+    function checkEmptyCart() {
+        const desktopItems = document.querySelector('.d-none.d-md-block tbody');
+        const mobileItems = document.querySelectorAll('.d-md-none .card');
+        
+        if ((!desktopItems || desktopItems.children.length === 0) && 
+            (!mobileItems || mobileItems.length === 0)) {
+            location.reload();
+        }
+    }
+
+    // Add event listeners when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add click handlers for remove buttons
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+                const itemId = this.dataset.itemId;
+                handleRemoveItem(productId, itemId);
+            });
+        });
+        
+        // Add click handlers for quantity buttons (minus and plus)
+        document.querySelectorAll('.decrease-qty').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+                const itemId = this.dataset.itemId;
+                const quantityInput = this.parentElement.querySelector('.quantity-input');
+                let currentQuantity = parseInt(quantityInput.value, 10);
+                
+                if (currentQuantity > 1) {
+                    updateCartQuantity(productId, itemId, currentQuantity - 1);
+                } else {
+                    // If quantity is 1, ask if they want to remove the item
+                    if (confirm('Do you want to remove this item from your cart?')) {
+                        handleRemoveItem(productId, itemId);
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('.increase-qty').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+                const itemId = this.dataset.itemId;
+                const quantityInput = this.parentElement.querySelector('.quantity-input');
+                let currentQuantity = parseInt(quantityInput.value, 10);
+                
+                updateCartQuantity(productId, itemId, currentQuantity + 1);
+            });
+        });
+    });
+})();
+</script>
+{% endblock extra_scripts %}

@@ -1,0 +1,51 @@
+{% extends '../../base.html' %}
+{% load static %}
+{% block title %}Payment Method{% endblock title %}
+{% block content %}
+<!-- header section end -->
+        <!-- pages-title-start -->
+		<div class="pages-title section-padding">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="pages-title-text text-center">
+							<h2 style="color:#f4cca4">Payment Methodd</h2>
+							<ul class="text-left">
+								<li><a style="color:#d99879" href="index.html">Home </a></li>
+								<li style="color:#d99879"><span> // </span>payment method</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+            
+		</div>
+		<!-- pages-title-end -->
+		<!-- contact content section start -->
+		<div class="payment-methods" style="background:#1C1427; padding:20px; border-radius:10px; color:#f4cca4;">
+			<h3 style="text-align:center; color:#f4cca4; margin-bottom:20px;">Select Payment Method</h3>
+			<form action="{% url 'orders:payment' %}" method="POST">
+				{% csrf_token %}
+				<div class="form-check" style="margin-bottom:15px;">
+					<input type="radio" name="payment_method" value="razorpay" id="razorpay" required>
+					<label for="razorpay" style="color:#d99879; font-size:16px; cursor:pointer;">
+						Pay Online (Razorpay)
+					</label>
+				</div>
+				<div class="form-check" style="margin-bottom:15px;">
+					<input type="radio" name="payment_method" value="cod" id="cod" required>
+					<label for="cod" style="color:#d99879; font-size:16px; cursor:pointer;">
+						Cash on Delivery (COD)
+					</label>
+				</div>
+				<div class="text-center" style="margin-top:20px;">
+					<button type="submit" style="background:#d99879; color:#fff; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">
+						Proceed
+					</button>
+				</div>
+			</form>
+		</div>
+		
+		
+        
+{% endblock content %}

@@ -1,0 +1,306 @@
+/* Custom header styling */
+.top-info-bar {
+    background: #2c3e50;
+    color: white;
+    padding: 0;
+    font-size: 14px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+
+/* Improved main header height management */
+.main-header {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 12px 0; /* Increased padding for better spacing */
+    min-height: 80px; /* Minimum height instead of fixed */
+    display: flex;
+    align-items: center;
+}
+
+/* Navbar height override - use this to control all navbar heights */
+.navbar,
+.main-header .navbar {
+    height: 80px !important;
+    min-height: 80px !important;
+    max-height: none !important; /* Remove any max-height constraints */
+    padding: 1rem 0 !important; /* Vertical padding for content spacing */
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Remove fixed height constraints */
+.navbar,
+.navbar-expand-lg {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+/* Better logo section styling */
+.logo-section {
+    display: flex;
+    align-items: center;
+}
+
+.logo-section img {
+    max-width: 60px;
+    height: auto;
+}
+
+.logo-section h1 {
+    font-family: "Engagement", cursive !important;
+    color: #ffb524 !important;
+    margin: 0 !important;
+    line-height: 1.2;
+    font-size: 2.5rem !important;
+}
+
+/* Logo and brand adjustments */
+.navbar-brand {
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+}
+
+/* Enhanced search bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar .form-control {
+    height: 48px;
+    border: 2px solid #e9ecef;
+    font-size: 16px;
+    border-radius: 25px 0 0 25px;
+}
+
+.search-bar .btn {
+    height: 48px;
+    background: #23566F;
+    border: 2px solid #23566F;
+    min-width: 60px;
+    border-radius: 0 25px 25px 0;
+}
+
+/* User actions improvements */
+.user-actions {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.user-actions a {
+    color: #495057;
+    font-size: 18px;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.user-actions a:hover {
+    color: #23566F;
+}
+
+.user-actions .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navigation-menu {
+    background: #2c3e50;
+    padding: 0;
+    margin-bottom: 5px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.navigation-menu .nav-link {
+    color: white !important;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 10px 20px !important;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.navigation-menu .nav-link:hover,
+.navigation-menu .nav-link.active {
+    background: #34495e;
+    color: #f39c12 !important;
+}
+
+/* Navigation links adjustments */
+.navbar-nav .nav-link {
+    line-height: 1.5 !important;
+    padding: 0.75rem 1rem !important;
+}
+
+/* Responsive Design */
+
+/* Extra Small devices (phones, 576px and down) */
+@media (max-width: 575.98px) {
+    .top-info-bar {
+        font-size: 12px;
+        padding: 0;
+        height: 26px;
+    }
+    
+    .main-header {
+        min-height: 50px;
+        padding: 6px 0;
+    }
+    
+    .logo-section h1 {
+        font-size: 1.2rem !important;
+    }
+    
+    .search-bar .form-control {
+        height: 35px;
+        font-size: 12px;
+    }
+    
+    .search-bar .btn {
+        height: 35px;
+        min-width: 40px;
+    }
+    
+    .user-actions a {
+        font-size: 14px;
+    }
+    
+    .navigation-menu .nav-link {
+        padding: 8px 15px !important;
+        font-size: 13px;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .logo-section h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .search-bar .form-control {
+        height: 38px;
+    }
+    
+    .search-bar .btn {
+        height: 38px;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .logo-section h1 {
+        font-size: 2rem !important;
+    }
+    
+    .main-header {
+        padding: 10px 0;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .logo-section h1 {
+        font-size: 2.5rem !important;
+    }
+    
+    .main-header {
+        padding: 10px 0;
+    }
+    
+    .search-bar .form-control {
+        height: 45px;
+        font-size: 16px;
+    }
+    
+    .search-bar .btn {
+        height: 45px;
+        min-width: 60px;
+    }
+    
+    .user-actions a {
+        font-size: 18px;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .navigation-menu .nav-link {
+        padding: 0 25px !important;
+    }
+}
+
+/* Mobile Menu Specific Styling */
+@media (max-width: 991.98px) {
+    /* Mobile header styling */
+    .main-header {
+        padding: 8px 0;
+    }
+    
+    /* Mobile navigation collapsed state styling */
+    .navigation-menu .navbar-collapse {
+        background: #2c3e50;
+        margin-top: 5px;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .navigation-menu .navbar-nav {
+        text-align: center;
+        width: 100%;
+    }
+    
+    .navigation-menu .nav-link {
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 5px;
+        padding: 12px 15px !important;
+    }
+    
+    .navigation-menu .nav-link:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    /* Mobile menu button styling */
+    .btn-link {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 5px !important;
+        background: none !important;
+    }
+    
+    .btn-link:focus {
+        box-shadow: none !important;
+    }
+    
+    .btn-link:hover {
+        background: none !important;
+    }
+    
+    /* Mobile logo styling */
+    .logo-section h1 {
+        font-size: 1.3rem !important;
+    }
+    
+    /* Hide navigation margin on mobile */
+    .navigation-menu {
+        margin-bottom: 2px;
+        
+    }
+}

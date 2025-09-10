@@ -1,0 +1,9 @@
+.env
+env/
+./kolibai-key.pem
+*.pyc
+__pycache__/
+db.sqlite3
+*.pem
+.env
+project.zip

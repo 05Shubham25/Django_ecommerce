@@ -1,0 +1,143 @@
+{% extends '../../../base.html' %}
+{% load static %}
+{% block title %}Edit Profile{% endblock title %}
+{% block content %}
+
+<!-- Hero Section -->
+<div class="container-fluid bg-primary py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center">
+                <h1 class="text-white display-4">Edit Profile</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center bg-transparent mb-0">
+                        <li class="breadcrumb-item"><a href="\" class="text-white">Home</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Edit Profile</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Section -->
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12">
+            {% include "includes/alerts.html" %}
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            {% include "includes/dashboard_slider.html" %}
+        </div>
+        
+        <!-- Main Form -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Edit Your Profile</h5>
+                    <button style="color: #fff !important;" type="submit" form="profile-form" class="btn btn-primary">
+                        Save Changes
+                    </button>
+                </div>
+                
+                <div class="card-body">
+                    <form id="profile-form" action="{% url 'accounts:edit_profile' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <!-- Personal Information -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{user_form.first_name}}
+                                    <label>First Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{user_form.last_name}}
+                                    <label>Last Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{user_form.Phone_number}}
+                                    <label>Phone Number</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Information -->
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+                                    {{profile_form.address}}
+                                    <label>Complete Address</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    {{profile_form.city}}
+                                    <label>City</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    {{profile_form.state}}
+                                    <label>State</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    {{profile_form.country}}
+                                    <label>Country</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+    }
+    .form-floating > .form-control {
+        padding: 1rem 0.75rem;
+    }
+    #profile-upload {
+        display: none;
+    }
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+    .btn-primary {
+        padding: 0.5rem 1.5rem;
+    }
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: white;
+    }
+</style>
+
+<!-- Add FontAwesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+{% endblock content %}

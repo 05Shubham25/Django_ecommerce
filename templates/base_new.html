@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}E - S H O P{% endblock title %}</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;800&display=swap" rel="stylesheet"> 
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="{% static 'assets/lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+        <link href="{% static 'assets/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Engagement&display=swap" rel="stylesheet">
+        
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'assets/css/carousel.css' %}">
+
+        <style>
+            .engagement-regular {
+                font-family: "Engagement", cursive;
+                font-weight: 400;
+                font-style: normal;
+            }
+        </style>
+        
+    </head>
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" role="status"></div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Top Info Bar Start -->
+        <div class="container-fluid bg-primary text-white py-2 d-none d-lg-block">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-phone-alt me-2"></i>
+                            <span class="me-3">+91 9769174921</span>
+                            <span class="me-3">|</span>
+                            <span>Freshly Caught | No Cold Storage | Not Frozen, so NO same-day delivery</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end">
+                            <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-white me-3"><i class="fab fa-linkedin-in"></i></a>
+                            <span class="text-white">Track Order</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Top Info Bar End -->
+
+        <!-- Main Header Start -->
+        <div class="container-fluid bg-white shadow-sm">
+            <div class="container">
+                <div class="row align-items-center py-3">
+                    <!-- Logo Section -->
+                    <div class="col-lg-3">
+                        <a href="/" class="d-flex align-items-center text-decoration-none">
+                            <div class="bg-primary rounded-circle p-2 me-3">
+                                <span class="text-white fw-bold" style="font-size: 1.5rem;">KBF</span>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 text-primary fw-bold">FRESHNESS GUARANTEED</h4>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Search Bar -->
+                    <div class="col-lg-6">
+                        <form action="{% url 'shop:search' %}" method="GET" class="d-flex">
+                            <div class="input-group">
+                                <input type="text" name="keyword" class="form-control form-control-lg border-0 shadow-sm" 
+                                       placeholder="Search for products" style="border-radius: 25px 0 0 25px;">
+                                <button class="btn btn-primary px-4" type="submit" style="border-radius: 0 25px 25px 0;">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- User Actions -->
+                    <div class="col-lg-3">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <!-- Login/User Dropdown -->
+                            <div class="dropdown me-3">
+                                <a href="#" class="text-decoration-none d-flex align-items-center" 
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user me-2 text-primary"></i>
+                                    <span class="text-dark">
+                                        {% if user.is_authenticated %}
+                                            {{ user.first_name|capfirst }}
+                                        {% else %}
+                                            Login
+                                        {% endif %}
+                                    </span>
+                                    <i class="fas fa-chevron-down ms-1 text-muted"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    {% if user.is_authenticated %}
+                                    <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
+                                    {% else %}
+                                    <li><a class="dropdown-item" href="{% url 'accounts:login' %}">Login</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'accounts:register' %}">Register</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            
+                            <!-- Wishlist -->
+                            <a href="#" class="text-decoration-none me-3">
+                                <i class="far fa-heart text-primary"></i>
+                                <span class="badge bg-secondary rounded-pill ms-1">0</span>
+                            </a>
+                            
+                            <!-- Cart -->
+                            <a href="{% url 'cart:cart' %}" class="text-decoration-none">
+                                <i class="fas fa-shopping-cart text-primary"></i>
+                                <span class="badge bg-secondary rounded-pill ms-1">{{ cart_count }}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Header End -->
+
+        <!-- Navigation Menu Start -->
+        <div class="container-fluid bg-primary">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg navbar-dark py-0">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link text-white px-4 py-3" href="/">HOME</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white px-4 py-3" href="#" data-bs-toggle="dropdown">
+                                    MARINE/ SEAWATER (SEAFOOD/FISH)
+                                </a>
+                                <ul class="dropdown-menu">
+                                    {% for category in categories %}
+                                    <li><a class="dropdown-item" href="{{ category.get_category_slug_url }}">{{ category.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white px-4 py-3" href="{% url 'shop:shop' %}">PRAWNS/ SHRIMPS</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white px-4 py-3" href="#">FRESH WATER FISH</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white px-4 py-3" href="#">SHELLED SEAFOOD</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white px-4 py-3" href="#">DRIED FISH</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white px-4 py-3" href="#">SPICES & PICKLES</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white px-4 py-3" href="#">FISH EGGS / CAVIAR</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Navigation Menu End -->
+
+        {% block content %}
+
+        {% endblock content %}
+    
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
+            <div class="container py-5">
+                <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5) ;">
+                    <div class="row g-4">
+                        <div class="col-lg-3">
+                            <a href="#">
+                                <h1 class="engagement-regular text-primary mb-0" style="color:#ffb524 !important; font-size: 2.5rem;">The Kolin Bai</h1>
+                                <!-- <p class="text-secondary mb-0">Fresh products</p> -->
+                            </a>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="d-flex justify-content-end pt-3">
+                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-youtube"></i></a>
+                                <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+        <!-- Copyright Start -->
+        <div class="container-fluid copyright bg-dark py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>Your Site Name</a>, All right reserved.</span>
+                    </div>
+                    <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        <!--/*** This template is free as long as you keep the below author's attribution link/credit link/backlink. ***/-->
+                        <!--/*** If you'd like to use the template without the below author's attribution link/credit link/backlink, ***/-->
+                        <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
+                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Copyright End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'assets/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'assets/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'assets/lib/lightbox/js/lightbox.min.js' %}"></script>
+    <script src="{% static 'assets/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    </body>
+
+</html>

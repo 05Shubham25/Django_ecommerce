@@ -1,0 +1,129 @@
+{% extends '../../../base.html' %}
+{% load static %}
+{% block title %}Order Completed{% endblock title %}
+
+{% block content %}
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+  <h1 class="text-center text-white display-6">Your Order</h1>
+</div>
+<!-- Single Page Header End -->
+
+<!-- Font awesome -->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+
+<div class="container py-5">
+    <!-- Success Message -->
+    <div class="text-center mb-5">
+        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+        <h2 class="mt-4">Payment Successful</h2>
+    </div>
+
+    <!-- Order Details Card -->
+    <div class="card shadow-lg border-0 rounded-3 bg-light">
+        <div class="card-body p-4 p-md-5">
+            <div class="row">
+                <!-- Company Logo -->
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <img src="{% static './img/logo.jpg' %}" alt="Company Logo" class="img-fluid rounded" style="max-width: 200px;">
+                </div>
+
+                <!-- Invoice To -->
+                <div class="col-md-6 text-md-end mb-4">
+                    <h5 class="text-primary mb-3">Invoiced To</h5>
+                    <div class="fs-6">
+                        <p class="mb-1">{{order.full_name}}</p>
+                        <p class="mb-1">{{order.address}}</p>
+                        <p class="mb-1">{{order.city}}, {{order.state}}</p>
+                        <p class="mb-1">{{order.country}}</p>
+                    </div>
+                </div>
+
+                <!-- Order Information -->
+                <div class="col-12 mt-4">
+                    <div class="bg-white p-4 rounded-3 shadow-sm">
+                        <div class="row g-3">
+                            <div class="col-sm-6 col-md-3">
+                                <p class="text-muted mb-1">Order Number</p>
+                                <p class="fw-bold mb-0">{{order_number}}</p>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <p class="text-muted mb-1">Transaction ID</p>
+                                <p class="fw-bold mb-0">{{transID}}</p>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <p class="text-muted mb-1">Order Date</p>
+                                <p class="fw-bold mb-0">{{order.order_created}}</p>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <p class="text-muted mb-1">Status</p>
+                                <span class="badge bg-success">{{payment.status}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="col-12 mt-4">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="text-center">Product</th>
+                                    <th class="text-center">Details</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-center">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in ordered_products %}
+                                <tr>
+                                    <td class="text-center" style="width: 100px;">
+                                        <img src="{{item.product.image.url}}" class="img-fluid rounded" alt="{{item.product.name}}" style="max-width: 80px;">
+                                    </td>
+                                    <td>
+                                        <h6 class="mb-1">{{item.product.name}}</h6>
+                                        {% if item.variations.all %}
+                                        <small class="text-muted">
+                                            {% for i in item.variations.all %}
+                                            {{ i.variation_category | capfirst }}: {{ i.variation_value | capfirst }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </small>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">₹{{item.product_price}}</td>
+                                    <td class="text-center">{{item.quantity}}</td>
+                                    <td class="text-center">₹{{item.sub_total}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="bg-light">
+                                <tr>
+                                    <td colspan="4" class="text-end">Sub Total:</td>
+                                    <td class="text-center">₹{{subtotal}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end">Marination Charges:</td>
+                                    <td class="text-center">₹{{marination_tax}}</td>
+                                </tr>
+                                <tr class="fw-bold">
+                                    <td colspan="4" class="text-end">Grand Total:</td>
+                                    <td class="text-center">₹{{ grand_total|floatformat:2 }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thank You Message -->
+            <div class="text-center mt-5">
+                <h5 class="text-primary">Thank you for shopping with us!</h5>
+                <p class="text-muted mb-0">We hope to see you again soon.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

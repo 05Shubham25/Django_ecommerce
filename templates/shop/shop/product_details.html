@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ single_product.name }}{% endblock %}
+
+{% block content %}
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Shop Detail</h1>
+</div>
+<!-- Single Page Header End -->
+
+<!-- Single Product Start -->
+<div class="container-fluid py-5 mt-5">
+    <div class="container py-5">
+        <div class="row g-4 mb-5">
+            <div class="col-lg-8 col-xl-9">
+                <div class="row g-4">
+                    <!-- Product Image -->
+                    <div class="col-lg-6">
+                        <div class="border rounded" style="max-width: 250px">
+                            <img src="{{ single_product.image.url }}" class="img-fluid rounded" alt="{{ single_product.name }}" />
+                        </div>
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="col-lg-6">
+                        <h4 class="fw-bold mb-3">{{ single_product.name }}</h4>
+                        <p class="mb-3">Category: {{ single_product.category }}</p>
+                        <h5 class="fw-bold mb-3">₹{{ single_product.price }}</h5>
+                        <h6 class="mb-3">{{ single_product.quantity }}</h6>
+
+                        <!-- Rating Stars -->
+                        <div class="d-flex mb-4">
+                            {% for i in "12345" %}
+                            <i class="fa fa-star {% if forloop.counter <= single_product.averageRating %}text-secondary{% endif %}"></i>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Product Form -->
+                        <form id="addToCartForm" data-product-id="{{ single_product.id }}">
+                            {% csrf_token %}
+
+                            <!-- Quantity Controls -->
+                            <div class="d-flex align-items-center mb-4">
+                                <label class="me-3">Quantity:</label>
+                                <div class="input-group" style="width: 130px;">
+                                    <button type="button" class="btn btn-sm btn-secondary decrease-quantity">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                    <input type="text" class="form-control text-center quantity-input" value="1" readonly>
+                                    <button type="button" class="btn btn-sm btn-secondary increase-quantity">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Marination Options -->
+                            {% if marination_variations %}
+                            <div class="mb-3">
+                                <label for="marination" class="form-label">Select Marination: <span class="text-muted">(₹25 extra)</span></label>
+                                <select class="form-select" id="marination" name="marination">
+                                    <option value="" selected>No Marination</option>
+                                    {% for variation in marination_variations %}
+                                    <option value="{{ variation.variation_value|lower }}">{{ variation.variation_value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+
+                            <!-- Cut Options -->
+                            {% if cut_variations %}
+                            <div class="mb-3">
+                                <label for="cut" class="form-label">How would you like it cut?</label>
+                                <select class="form-select" id="cut" name="cut">
+                                    <option value="" selected>No Cutting Required</option>
+                                    {% for variation in cut_variations %}
+                                    <option value="{{ variation.variation_value|lower }}">{{ variation.variation_value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+
+                            <!-- Cleaning Options -->
+                            {% if cleaning_variations %}
+                            <div class="mb-3">
+                                <label for="cleaning" class="form-label">Cleaned and Deveined?</label>
+                                <select class="form-select" id="cleaning" name="cleaning">
+                                    {% for variation in cleaning_variations %}
+                                    <option value="{{ variation.variation_value|lower }}">{{ variation.variation_value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+
+                            <!-- Total Price Display -->
+                            <div class="mb-3">
+                                <h5 class="fw-bold">Total: ₹<span id="totalPrice">{{ single_product.price }}</span></h5>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            {% if single_product.stock <= 0 %}
+                            <div class="alert alert-info text-center fs-5 mt-4" role="alert">
+                                <strong>Out of Stock</strong>
+                                <p class="mb-0">This product is currently unavailable</p>
+                            </div>
+                            {% else %}
+                            <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                <i class="fa fa-shopping-bag me-2"></i> Add to Cart
+                            </button>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Product Description -->
+                <div class="col-lg-12 mt-5">
+                    <nav>
+                        <div class="nav nav-tabs mb-3">
+                            <button class="nav-link active border-white border-bottom-0" type="button" role="tab">
+                                Description
+                            </button>
+                        </div>
+                    </nav>
+                    <div class="tab-content mb-5">
+                        <div class="tab-pane active" id="nav-description" role="tabpanel">
+                            <p>{{ single_product.description }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nutritional Benefits -->
+                {% if single_product.nutritional_benefits.all %}
+                <div class="col-lg-12 mt-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-leaf text-success me-2"></i>Nutritional Benefits</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for benefit in single_product.nutritional_benefits.all %}
+                                <div class="col-md-6 col-lg-4 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        <span class="fw-medium">{{ benefit.display_name }}</span>
+                                    </div>
+                                    {% if benefit.description %}
+                                    <small class="text-muted ms-4">{{ benefit.description }}</small>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Single Product End -->
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('addToCartForm');
+    const quantityInput = document.querySelector('.quantity-input');
+    const decreaseBtn = document.querySelector('.decrease-quantity');
+    const increaseBtn = document.querySelector('.increase-quantity');
+    const basePrice = {{ single_product.price }};
+    const totalPriceDisplay = document.getElementById('totalPrice');
+    const marinationSelect = document.getElementById('marination');
+
+    // Update total price
+    function updateTotalPrice() {
+        let quantity = parseInt(quantityInput.value);
+        let extraCharge = marinationSelect && marinationSelect.value ? 25 : 0;
+        let total = (basePrice + extraCharge) * quantity;
+        totalPriceDisplay.textContent = total.toFixed(2);
+    }
+
+    // Quantity controls
+    decreaseBtn.addEventListener('click', function() {
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            updateTotalPrice();
+        }
+    });
+
+    increaseBtn.addEventListener('click', function() {
+        let currentValue = parseInt(quantityInput.value);
+        quantityInput.value = currentValue + 1;
+        updateTotalPrice();
+    });
+
+    // Handle marination change
+    if (marinationSelect) {
+        marinationSelect.addEventListener('change', updateTotalPrice);
+    }
+
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const productId = this.dataset.productId;
+        const formData = new FormData(this);
+        formData.append('quantity', quantityInput.value);
+        
+        fetch(`/cart/add_cart/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            },
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Redirect directly to cart
+                window.location.href = '/cart/';
+            } else {
+                alert('❌ Failed to add item to cart: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+});
+</script>
+{% endblock %}

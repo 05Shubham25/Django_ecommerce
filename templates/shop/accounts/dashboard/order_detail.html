@@ -1,0 +1,171 @@
+{% extends '../../../base.html' %}
+{% load static %}
+{% block title %}Order Details{% endblock title %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="container-fluid bg-light py-4 mb-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'accounts:my_orders' %}" class="text-decoration-none">Orders</a></li>
+                        <li class="breadcrumb-item active">Order Details</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Details Section -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Order #{{order.order_number}}</h5>
+                        <span class="badge bg-primary">{{order.status}}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Order Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">Order Information</h6>
+                                    <table class="table table-borderless table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-muted">Order Date:</td>
+                                                <td>{{order.order_created}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Order Time:</td>
+                                                <td>{{order.hour_update}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Transaction ID:</td>
+                                                <td>{{order.payment.payment_id}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Payment Method:</td>
+                                                <td>{{order.payment.payment_method}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Payment Status:</td>
+                                                <td>
+                                                    {% if order.payment.payment_status == 'Completed' %}
+                                                    <span class="badge bg-success">Paid</span>
+                                                    {% else %}
+                                                    <span class="badge bg-warning text-dark">{{order.payment.payment_status}}</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">Shipping Information</h6>
+                                    <p class="mb-1"><strong>{{order.full_name}}</strong></p>
+                                    <p class="mb-1">{{order.address}}</p>
+                                    {% if order.city %}<p class="mb-1">{{order.city}}</p>{% endif %}
+                                    {% if order.state %}<p class="mb-1">{{order.state}}</p>{% endif %}
+                                    {% if order.country %}<p class="mb-1">{{order.country}}</p>{% endif %}
+                                    <p class="mb-1">Phone: {{order.phone}}</p>
+                                    <p class="mb-0">Email: {{order.email}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <h6 class="mb-3">Order Items</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col" class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_detail %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{item.product.image.url}}" alt="{{item.product.name}}" class="img-fluid rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                            <div class="ms-3">
+                                                <h6 class="mb-0">{{item.product.name}}</h6>
+                                                {% if item.variations.all %}
+                                                <small class="text-muted">
+                                                    {% for i in item.variations.all %}
+                                                    {{i.variation_category|capfirst}}: {{i.variation_value|capfirst}}{% if not forloop.last %}, {% endif %}
+                                                    {% endfor %}
+                                                </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>₹{{item.product_price}}</td>
+                                    <td>{{item.quantity}}</td>
+                                    <td class="text-end">₹{{item.sub_total}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="row mt-4">
+                        <div class="col-md-6 ms-auto">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title mb-3">Order Summary</h6>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Subtotal</span>
+                                        <span>₹{{subtotal}}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Shipping</span>
+                                        <span>₹15.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Tax</span>
+                                        <span>₹{{order.tax}}</span>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between fw-bold">
+                                        <span>Total</span>
+                                        <span>₹{{order.order_total}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'accounts:my_orders' %}" class="btn btn-outline-primary me-2">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Orders
+                        </a>
+                        <button class="btn btn-primary" onclick="window.print()">
+                            <i class="fas fa-print me-2"></i> Print Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

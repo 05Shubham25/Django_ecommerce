@@ -1,0 +1,702 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}KOLINBAI{% endblock title %}
+{% block content %}
+
+<!-- Delivery Time Modal -->
+<div class="modal fade" id="deliveryTimeModal" tabindex="-1" aria-labelledby="deliveryTimeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h5 class="modal-title text-white" id="deliveryTimeModalLabel"><i class="fas fa-clock me-2"></i>Select Delivery Time</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-weight: bold;  " class="text-center mb-4">This is our delivery schedule</p>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="card h-100 delivery-option" onclick="selectDeliveryTime('morning')">
+              <div class="card-body text-center">
+                <i class="fas fa-sun fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Morning</h5>
+                <p class="card-text small text-muted">8:00 AM - 12:00 PM</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 delivery-option" onclick="selectDeliveryTime('evening')">
+              <div class="card-body text-center">
+                <i class="fas fa-cloud-sun fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Evening</h5>
+                <p class="card-text small text-muted">4:00 PM - 7:00 PM</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 delivery-option" onclick="selectDeliveryTime('night')">
+              <div class="card-body text-center">
+                <i class="fas fa-moon fa-3x text-secondary mb-3"></i>
+                <h5 class="card-title">Night</h5>
+                <p class="card-text small text-muted">7:00 PM - 10:00 PM</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" style="color: aliceblue;" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>
+        <!-- <button type="button" class="btn btn-primary" id="saveDeliveryTime" disabled>Okay</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .delivery-option {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+  
+  .delivery-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  .delivery-option.selected {
+    border-color: var(--bs-primary);
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+  }
+</style>
+
+
+<!-- Hero Start -->
+<div class="container-fluid py-5 mb-5 hero-header position-relative">
+    <!-- Background Carousel for all screens -->
+    <div id="backgroundCarousel" class="carousel slide position-absolute w-100 h-100" data-bs-ride="carousel" style="top: 0; left: 0; z-index: -1;">
+        <div class="carousel-inner h-100">
+            <div class="carousel-item active h-100">
+                <div class="hero-bg h-100" style="background: linear-gradient(rgba(248, 223, 173, 0.1), rgba(248, 223, 173, 0.1)), url('{% static 'assets/img/banner.jpg' %}'); background-position: center center; background-repeat: no-repeat; background-size: cover;"></div>
+            </div>
+            <div class="carousel-item h-100">
+                <div class="hero-bg h-100" style="background: linear-gradient(rgba(248, 223, 173, 0.1), rgba(248, 223, 173, 0.1)), url('{% static 'assets/img/1.jpg' %}'); background-position: center center; background-repeat: no-repeat; background-size: cover;"></div>
+            </div>
+            <div class="carousel-item h-100">
+                <div class="hero-bg h-100" style="background: linear-gradient(rgba(248, 223, 173, 0.1), rgba(248, 223, 173, 0.1)), url('{% static 'assets/img/2.jpg' %}'); background-position: center center; background-repeat: no-repeat; background-size: cover;"></div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#backgroundCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#backgroundCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-md-12 col-lg-7">
+                <!-- Empty space -->
+            </div>
+            <div class="col-md-12 col-lg-5">
+                <!-- Static image with text inside -->
+                <div class="position-relative">
+                    <img src="{% static 'assets/img/3.jpg' %}" 
+                         class="img-fluid w-100 h-100 bg-secondary rounded" 
+                         alt="Fresh seafood">
+                    <!-- Text inside the image -->
+                    
+                </div>
+                <div class="position-absolute top-50 start-50 translate-middle">
+                        <h1 class="display-3" style="color: #ffffff !important;height: 10px;font-size: 40px;margin-right: -450px;margin-left: 330px;margin-top: 250px;">Straight from the BOAT !!</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+
+
+
+<!-- About Me Section Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="mb-4">
+            <h1 class="display-5 mb-4 text-primary">About US</h1>
+        </div>
+        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+            <p>I am focused  more on supporting local fishermen and fish markets by taking their products online, especially highlighting the authenticity of "<span class="fw-bold text-warning">THE KOLINBAI</span>, "  that proudly sells fishes in the fish market on a small scale !  Not only does it preserve the unique culture of the market, but it can also bring fresh, locally sourced products to a broader audience.
+            </p>
+        </div>
+    </div>
+</div>
+<!-- About Me Section End -->
+
+
+
+
+
+<!--Seasonal Section Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="mb-4">
+            <h1 class="display-5 mb-4 text-primary">Seasonal Catch of the Day</h1>
+        </div>
+        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+            {% if featured_products %}
+            <link rel="stylesheet" href="{% static 'assets/css/carousel.css' %}">
+            
+                
+                <section class="container-fluid px-0">
+                  <div id="cCarousel">
+                    <div class="arrow" id="prev"><i class="fas fa-chevron-left"></i></div>
+                    <div class="arrow" id="next"><i class="fas fa-chevron-right"></i></div>
+
+                    <div id="carousel-vp">
+                      <div id="cCarousel-inner">
+                        {% for featured in featured_products %}
+                        <article class="cCarousel-item">
+                          <img src="{{ featured.product.image.url }}" alt="{{ featured.product.name }}">
+                          <div class="border border-secondary border-top-0 rounded-bottom">
+                            <div class="infos">
+                              <h3>{{ featured.product.name }}</h3>
+                              <a href="{% url 'shop:product_details' featured.product.category.slug featured.product.slug %}" class="btn border border-secondary rounded-pill px-3 text-primary">₹{{ featured.product.price }}</a>
+                            </div>
+                          </div>
+                        </article>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </section>
+                
+                <script src="{% static 'assets/js/carousel.js' %}"></script>
+                {% else %}
+                <div class="text-center py-3">
+                    <p class="mb-0">No featured products selected for today</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Seasonal Section End -->
+
+
+
+
+<!-- Fruits Shop Start-->
+<div class="container-fluid fruite py-5">
+    <div class="container py-5">
+        <div class="tab-class text-center">
+            <div class="row g-4">
+                <div class="col-lg-4 text-start">
+                    <h1>Our Organic Products</h1>
+                </div>
+                <div class="col-lg-8 text-end">
+                    <ul class="nav nav-pills d-inline-flex text-center mb-5">
+
+                        <li class="nav-item">
+                            <a class="d-flex m-2 py-2 bg-light rounded-pill active" data-bs-toggle="pill" href="#tab-1">
+                                <span class="text-dark" style="width: 130px;">All Products</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane fade show p-0 active">
+                    <div class="row g-4">
+                        <div class="col-lg-12">
+                            <div class="row g-4">
+                                {% for product in products|slice:':8' %}
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <a href="{{ product.get_prodcut_details_url }}"><img style="height:350px"
+                                                    src="{{ product.image.url}}" class="img-fluid w-100 rounded-top"
+                                                    alt=""></a>
+                                        </div>
+                                        {% for category in categories %}
+                                        <!-- <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">{{category.name}}</div> -->
+                                        {% endfor %}
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <h4><a href="{{ product.get_prodcut_details_url }}">{{ product.name }}</a>
+                                            </h4>
+                                            <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p> -->
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">₹{{product.price}}</p>
+                                                <a href="{% url 'shop:product_details' product.category.slug product.slug %}"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-2" class="tab-pane fade show p-0">
+                    <div class="row g-4">
+                        <div class="col-lg-12">
+                            <div class="row g-4">
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <img src="{% static 'assets/img/fruite-item-5.jpg' %}"
+                                                class="img-fluid w-100 rounded-top" alt="">
+                                        </div>
+                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">Fruits</div>
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <!-- <h4>Grapes</h4>
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p> -->
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                <a href="#"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <img src="{% static 'assets/img/fruite-item-2.jpg' %}"
+                                                class="img-fluid w-100 rounded-top" alt="">
+                                        </div>
+                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">Fruits</div>
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <!-- <h4>Raspberries</h4>
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p> -->
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                <a href="#"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-3" class="tab-pane fade show p-0">
+                    <div class="row g-4">
+                        <div class="col-lg-12">
+                            <div class="row g-4">
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <img src="{% static 'assets/img/fruite-item-1.jpg' %}"
+                                                class="img-fluid w-100 rounded-top" alt="">
+                                        </div>
+                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">Fruits</div>
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <!-- <h4>Oranges</h4>
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p> -->
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                <a href="#"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <img src="{% static 'assets/img/fruite-item-6.jpg' %}"
+                                                class="img-fluid w-100 rounded-top" alt="">
+                                        </div>
+                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">Fruits</div>
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <!-- <h4>Apple</h4>
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p> -->
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                <a href="#"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-4" class="tab-pane fade show p-0">
+                    <div class="row g-4">
+                        <div class="col-lg-12">
+                            <div class="row g-4">
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <img src="{% static 'assets/img/fruite-item-5.jpg' %}"
+                                                class="img-fluid w-100 rounded-top" alt="">
+                                        </div>
+                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">Fruits</div>
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <!-- <h4>Grapes</h4>
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p> -->
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                <a href="#"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <img src="{% static 'assets/img/fruite-item-4.jpg' %}"
+                                                class="img-fluid w-100 rounded-top" alt="">
+                                        </div>
+                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">Fruits</div>
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <!-- <h4>Apricots</h4>
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p> -->
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                <a href="#"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-5" class="tab-pane fade show p-0">
+                    <div class="row g-4">
+                        <div class="col-lg-12">
+                            <div class="row g-4">
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <img src="{% static 'assets/img/fruite-item-3.jpg' %}"
+                                                class="img-fluid w-100 rounded-top" alt="">
+                                        </div>
+                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">Fruits</div>
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <h4>Banana</h4>
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p>
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                <a href="#"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <img src="{% static 'assets/img/fruite-item-2.jpg' %}"
+                                                class="img-fluid w-100 rounded-top" alt="">
+                                        </div>
+                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">Fruits</div>
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <h4>Raspberries</h4>
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p>
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                <a href="#"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="rounded position-relative fruite-item">
+                                        <div class="fruite-img">
+                                            <img src="{% static 'assets/img/fruite-item-1.jpg' %}"
+                                                class="img-fluid w-100 rounded-top" alt="">
+                                        </div>
+                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            style="top: 10px; left: 10px;">Fruits</div>
+                                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                            <h4>Oranges</h4>
+                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                                incididunt</p>
+                                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                <a href="#"
+                                                    class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                                                    cart</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fruits Shop End-->
+
+
+
+
+
+
+<!-- About Me Section Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+            <div class="mb-4">
+                <h1 class="display-5 mb-4 text-primary">Fresh, Convenient Seafood for Your Busy Life</h1>
+            </div>
+
+            <div class="py-2">
+                <p class="text-primary" >
+                    At <span class="fw-bold text-warning">THE KOLINBAI</span>, we make it easier for working women to enjoy fresh, high-quality seafood without the hassle. As your local "Kolinbai," we offer fish that’s cleaned, deveined, and marinated in your choice of spices—ready to cook and enjoy.
+                </p>
+                <p class="fst-italic text-primary">
+                    We’re here to save you time, so you can focus on what matters most. Fresh seafood, delivered to your door, with convenience and taste at the heart of everything we do.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About Me Section End -->
+
+
+
+
+<!-- Featurs Start -->
+<!-- Featurs Start -->
+<!-- Featurs Start -->
+<!-- Features Section Start -->
+<div class="container-fluid service py-5">
+    <div class="container py-5">
+        <div class="row g-3 g-md-4 justify-content-center">
+            <!-- Raw Fish -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <a href="#" class="d-block text-decoration-none">
+                    <div class="service-item h-100 rounded overflow-hidden position-relative">
+                        <div class="service-img-wrapper">
+                            <img src="{% static 'assets/img/paplet.png' %}" class="service-img" alt="Raw Fish">
+                        </div>
+                        <div class="service-content">
+                            <h5 class="service-title">RAW FISH</h5>
+                            <p class="service-desc">Fresh catch of the day</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Pickles -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <a href="#" class="d-block text-decoration-none">
+                    <div class="service-item h-100 rounded overflow-hidden position-relative">
+                        <div class="service-img-wrapper">
+                            <img src="{% static 'assets/img/pickles.png' %}" class="service-img" alt="Pickles">
+                        </div>
+                        <div class="service-content">
+                            <h5 class="service-title">PICKLES</h5>
+                            <p class="service-desc">Traditional homemade pickles</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Dry Fish -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <a href="#" class="d-block text-decoration-none">
+                    <div class="service-item h-100 rounded overflow-hidden position-relative">
+                        <div class="service-img-wrapper">
+                            <img src="{% static 'assets/img/dry-fish.jpeg' %}" class="service-img" alt="Dry Fish">
+                        </div>
+                        <div class="service-content">
+                            <h5 class="service-title">DRY FISH</h5>
+                            <p class="service-desc">Sun-dried preserved fish</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Masala -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <a href="#" class="d-block text-decoration-none">
+                    <div class="service-item h-100 rounded overflow-hidden position-relative">
+                        <div class="service-img-wrapper">
+                            <img src="{% static 'assets/img/masala_nobg.png' %}" class="service-img" alt="Masala">
+                        </div>
+                        <div class="service-content">
+                            <h5 class="service-title">MASALA</h5>
+                            <p class="service-desc">Authentic spice blends</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Features Section End -->
+
+
+
+<!-- Featurs Section Start -->
+<div class="container-fluid featurs py-5">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="featurs-item text-center rounded bg-light p-4">
+                    <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                        <i class="fas fa-car-side fa-3x text-white"></i>
+                    </div>
+                    <div class="featurs-content text-center">
+                        <h5>Free Shipping</h5>
+                        <p class="mb-0">For only nearby areas otherwise 50₹ Charges applicable</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="featurs-item text-center rounded bg-light p-4">
+                    <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                        <i class="fas fa-user-shield fa-3x text-white"></i>
+                    </div>
+                    <div class="featurs-content text-center">
+                        <h5>Security Payment</h5>
+                        <p class="mb-0">100% security payment</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="featurs-item text-center rounded bg-light p-4">
+                    <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                        <i class="fas fa-exchange-alt fa-3x text-white"></i>
+                    </div>
+                    <div class="featurs-content text-center">
+                        <h5>Seasonal Fish of the Day</h5>
+                        <p class="mb-0">Freshness Guaranted</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="featurs-item text-center rounded bg-light p-4">
+                    <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                        <i class="fa fa-phone-alt fa-3x text-white"></i>
+                    </div>
+                    <div class="featurs-content text-center">
+                        <h5>Support</h5>
+                        <p class="mb-0">According to TimeSlot</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Featurs Section End -->
+
+<!-- Banner Section Start-->
+
+<!-- Banner Section End -->
+
+<!-- Delivery Time Modal Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get current date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+    const lastVisitDate = localStorage.getItem('lastVisitDate');
+    
+    console.log('Today:', today);
+    console.log('Last visit:', lastVisitDate);
+    
+    // Always show modal for testing - remove this line later
+    localStorage.removeItem('lastVisitDate');
+    
+    // Check if user has visited today
+    if (lastVisitDate !== today) {
+      console.log('Showing modal');
+      // First visit today, show the modal
+      setTimeout(function() {
+        var deliveryModal = new bootstrap.Modal(document.getElementById('deliveryTimeModal'));
+        deliveryModal.show();
+      }, 500);
+      
+      // Update the last visit date to today
+      localStorage.setItem('lastVisitDate', today);
+    } else {
+      console.log('Not showing modal - already visited today');
+    }
+    
+    // Handle delivery option selection
+    const deliveryOptions = document.querySelectorAll('.delivery-option');
+    const saveButton = document.getElementById('saveDeliveryTime');
+    let selectedTime = '';
+    
+    window.selectDeliveryTime = function(time) {
+      selectedTime = time;
+      
+      // Remove selected class from all options
+      deliveryOptions.forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked option
+      event.currentTarget.classList.add('selected');
+      
+      // Enable save button
+      saveButton.disabled = false;
+    };
+    
+    // Save delivery time preference
+    saveButton.addEventListener('click', function() {
+      if (selectedTime) {
+        localStorage.setItem('deliveryTimePreference', selectedTime);
+        bootstrap.Modal.getInstance(document.getElementById('deliveryTimeModal')).hide();
+        
+        // You can also send this preference to the server if needed
+        // using an AJAX request
+      }
+    });
+  });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,141 @@
+def get_html_email_template():
+    return """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        .order-info {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .customer-info {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .products-table th, .products-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .products-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .products-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .summary {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #e9e9e9;
+        }
+        .status-new {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>New Order Received!</h1>
+        <p>Order #{order_number}</p>
+    </div>
+    
+    <div class="container">
+        <div class="order-info">
+            <h2>Order Details</h2>
+            <p><strong>Order Number:</strong> {order_number}</p>
+            <p><strong>Date:</strong> {order_date}</p>
+            <p><strong>Payment Method:</strong> {payment_method}</p>
+            <p><strong>Payment Status:</strong> <span class="status-{payment_status_class}">{payment_status}</span></p>
+        </div>
+
+        <div class="customer-info">
+            <h2>Customer Information</h2>
+            <p><strong>Name:</strong> {customer_name}</p>
+            <p><strong>Email:</strong> {customer_email}</p>
+            <p><strong>Phone:</strong> {customer_phone}</p>
+            <p><strong>Address:</strong> {customer_address}</p>
+        </div>
+
+        <h2>Order Items</h2>
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Image</th>
+                    <th>Variations</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {product_rows}
+            </tbody>
+        </table>
+
+        <div class="summary">
+            <h2>Order Summary</h2>
+            <p><strong>Subtotal:</strong> ₹{subtotal}</p>
+            <p><strong>Tax (2%):</strong> ₹{tax}</p>
+            <p><strong>Grand Total:</strong> ₹{grand_total}</p>
+            <p><strong>Delivery Time Slot:</strong> {delivery_slot}</p>
+            <p><strong>Order Notes:</strong> {order_notes}</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>This is an automated email notification for order #{order_number}</p>
+    </div>
+</body>
+</html>
+
