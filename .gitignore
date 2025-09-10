@@ -7,3 +7,4 @@ db.sqlite3
 *.pem
 .env
 project.zip
+.env
