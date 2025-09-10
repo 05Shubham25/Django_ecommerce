@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
-from .models import Product, Category, image_slider, Variation, product_of_the_day, NutritionalBenefit
+from .models import Product, Category, image_slider, Variation, product_of_the_day, NutritionalBenefit, FeatureCategory
 from cart.views import _cart_id
 from cart.models import CartItem
 from .models import ReviewRating
@@ -179,6 +179,46 @@ def search(request):
         'products_count': products_count,
     }
     return render(request, 'shop/shop/search.html', context)
+
+
+def feature_category(request, feature_slug):
+    """View to display products filtered by feature category"""
+    try:
+        # Get the feature category
+        feature_category = get_object_or_404(FeatureCategory, name=feature_slug, is_active=True)
+        
+        # Get products for this feature category
+        products = Product.objects.filter(feature_category=feature_category, is_available=True)
+        
+        # Get all nutritional benefits for the filter
+        nutritional_benefits = NutritionalBenefit.objects.filter(is_active=True).order_by('display_name')
+        
+        # Get selected nutritional benefits from request
+        selected_benefits = request.GET.getlist('benefits')
+        
+        # Filter by nutritional benefits if any are selected
+        if selected_benefits:
+            products = products.filter(nutritional_benefits__name__in=selected_benefits).distinct()
+        
+        # Pagination
+        paginator = Paginator(products, 6)
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
+        products_count = products.count()
+        
+        context = {
+            'feature_category': feature_category,
+            'products': paged_products,
+            'products_count': products_count,
+            'nutritional_benefits': nutritional_benefits,
+            'selected_benefits': selected_benefits,
+            'categories': Category.objects.all(),
+        }
+        return render(request, 'shop/shop/feature_category.html', context)
+        
+    except Exception as e:
+        messages.error(request, f'Error loading products: {str(e)}')
+        return redirect('shop:shop')
 
 
 

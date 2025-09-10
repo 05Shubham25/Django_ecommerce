@@ -1,5 +1,5 @@
 .env
-env/
+./env/
 ./kolibai-key.pem
 *.pyc
 __pycache__/

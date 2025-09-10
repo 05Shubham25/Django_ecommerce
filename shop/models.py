@@ -6,6 +6,29 @@ from django.core.exceptions import ValidationError
 from django.contrib import admin
 
 
+class FeatureCategory(models.Model):
+    """Model to store feature categories for products"""
+    FEATURE_CHOICES = [
+        ('raw_fish', 'RAW FISH'),
+        ('dry_fish', 'DRY FISH'),
+        ('pickles', 'PICKLES'),
+        ('masala', 'MASALA'),
+    ]
+    
+    name = models.CharField(max_length=50, choices=FEATURE_CHOICES, unique=True)
+    display_name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        verbose_name = 'Feature Category'
+        verbose_name_plural = 'Feature Categories'
+        ordering = ['display_name']
+    
+    def __str__(self):
+        return self.display_name
+
+
 class NutritionalBenefit(models.Model):
     """Model to store nutritional benefits that can be associated with products"""
     BENEFIT_CHOICES = [
@@ -53,6 +76,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    feature_category = models.ForeignKey(FeatureCategory, on_delete=models.CASCADE, null=True, blank=True, help_text="Required: Select the feature category this product belongs to")
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(max_length=300, blank=True)

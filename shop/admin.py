@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Category, Product, Variation, ReviewRating, ProductGallery, image_slider, product_of_the_day, NutritionalBenefit
+from .models import Category, Product, Variation, ReviewRating, ProductGallery, image_slider, product_of_the_day, NutritionalBenefit, FeatureCategory
 import admin_thumbnails
 
 class ProductAdminForm(forms.ModelForm):
@@ -22,6 +22,14 @@ class ProductGalleryInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(FeatureCategory)
+class FeatureCategoryAdmin(admin.ModelAdmin):
+    list_display = ['display_name', 'name', 'is_active']
+    list_filter = ['is_active']
+    list_editable = ['is_active']
+    search_fields = ['display_name', 'name']
+
+
 @admin.register(NutritionalBenefit)
 class NutritionalBenefitAdmin(admin.ModelAdmin):
     list_display = ['display_name', 'name', 'is_active']
@@ -39,9 +47,9 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = ProductAdminForm
-    list_display = ['name', 'price','new', 'discount', 'stock', 'created', 'updated', 'is_available']
+    list_display = ['name', 'feature_category', 'price','new', 'discount', 'stock', 'created', 'updated', 'is_available']
     prepopulated_fields = {'slug': ('name',)}
-    list_filter = ['is_available', 'category', 'new', 'nutritional_benefits']
+    list_filter = ['is_available', 'category', 'feature_category', 'new', 'nutritional_benefits']
     list_editable = ['price','discount', 'is_available', 'stock', 'new']
     readonly_fields = ['created', 'updated', ]
     inlines = [ProductGalleryInline]
@@ -49,7 +57,7 @@ class ProductAdmin(admin.ModelAdmin):
     # Custom fieldsets to organize the form better
     fieldsets = (
         ('Basic Information', {
-            'fields': ('category', 'name', 'slug', 'description', 'quantity', 'image')
+            'fields': ('category', 'feature_category', 'name', 'slug', 'description', 'quantity', 'image')
         }),
         ('Pricing & Stock', {
             'fields': ('price', 'discount', 'stock', 'is_available', 'new')
